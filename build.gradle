@@ -1,9 +1,10 @@
 plugins {
     id 'java'
 }
-
+apply plugin: 'maven-publish'
 group 'com.dot.fashion'
 version '1.0-SNAPSHOT'
+[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
 sourceCompatibility = 1.8
 
@@ -13,4 +14,16 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+// 上传jar和源码
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java    //发布java组件
+            groupId "$project.group"
+            artifactId "$project.name"
+            version "$project.version"
+        }
+    }
 }

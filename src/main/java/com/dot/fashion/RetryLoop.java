@@ -13,7 +13,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
  * since:2018/12/19
  */
 @SuppressWarnings({"WeakerAccess", "JavaDoc"})
-class RetryLoop {
+public class RetryLoop {
 
     private RetryConfig retryConfig;
     private Thread hook;
