@@ -4,10 +4,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * title:
+ * title:构造器
  * author:吉
  * since:2018/12/19
  */
+@SuppressWarnings("WeakerAccess")
 public class RetryBuilder {
     public static final int FOREVER = -1;
     private RetryConfig retryConfig;
