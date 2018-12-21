@@ -8,7 +8,7 @@ package com.dot.fashion;
 @FunctionalInterface
 public interface Retry<T> {
 
-    T proceed() throws InterruptedException;
+    T proceed() throws Exception;
 
     /**
      * proceed 报错时回调
