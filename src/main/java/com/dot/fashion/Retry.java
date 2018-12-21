@@ -5,9 +5,10 @@ package com.dot.fashion;
  * author:吉
  * since:2018/12/19
  */
+@FunctionalInterface
 public interface Retry<T> {
 
-    T proceed();
+    T proceed() throws InterruptedException;
 
     /**
      * proceed 报错时回调
@@ -37,4 +38,12 @@ public interface Retry<T> {
     default boolean canOutBreak(T ret, int round, long nanos) {
         return true;
     }
+
+    /**
+     * 超时
+     */
+    default void whenTimeout() {
+
+    }
+
 }
