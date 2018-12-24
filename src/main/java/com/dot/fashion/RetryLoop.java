@@ -116,13 +116,16 @@ public class RetryLoop {
         for (; state == State.RUNNING; ) {
             try {
                 i++;
+                if (!retry.preCondition(i)) {
+                    break;
+                }
                 t = retry.proceed();
             } catch (InterruptedException in) {
                 break;
             } catch (Throwable e) {
-                retry.whenError(e);
+                retry.whenError(e, i, System.nanoTime() - start);
             }
-            if (retry.canOutBreak(t, i, System.nanoTime() - start)) {
+            if (retry.postCondition(t, i, System.nanoTime() - start)) {
                 break;
             }
             if (num > 0 && i >= num) {

@@ -39,7 +39,7 @@ public class ProceedTest {
                             }
 
                             @Override
-                            public boolean canOutBreak(Integer ret, int round, long nanos) {
+                            public boolean postCondition(Integer ret, int round, long nanos) {
                                 System.out.println(round);
                                 return false;
                             }
@@ -70,7 +70,7 @@ public class ProceedTest {
                                 }
 
                                 @Override
-                                public boolean canOutBreak(Integer ret, int round, long nanos) {
+                                public boolean postCondition(Integer ret, int round, long nanos) {
                                     Assert.assertEquals(id, Thread.currentThread().getId());
                                     System.out.println(round);
                                     return false;

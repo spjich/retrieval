@@ -98,7 +98,7 @@ public class AsyncTest {
                     }
 
                     @Override
-                    public boolean canOutBreak(Integer ret, int round, long nanos) {
+                    public boolean postCondition(Integer ret, int round, long nanos) {
                         return false;
                     }
                 }
@@ -120,7 +120,7 @@ public class AsyncTest {
                     }
 
                     @Override
-                    public boolean canOutBreak(Integer ret, int round, long nanos) {
+                    public boolean postCondition(Integer ret, int round, long nanos) {
                         return round == 7;
                     }
                 }

@@ -67,7 +67,9 @@ pool：自定义线程池
 
 `whenFinish` 整个重试逻辑正常执行完毕时回调
 
-`canOutBreak` 每次重试完成时回调
+`postCondition` 循环后置条件，每次重试完成时回调
+
+`preCondition` 循环前置条件，每次执行前回调
 
 `whenTimeout` 重试超时时回调，此时不会再回调`whenFinish`
 

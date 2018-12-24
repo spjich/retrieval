@@ -13,9 +13,11 @@ public interface Retry<T> {
     /**
      * proceed 报错时回调
      *
-     * @param e 异常
+     * @param e     ex
+     * @param round 执行次数
+     * @param nanos 消耗时间
      */
-    default void whenError(Throwable e) {
+    default void whenError(Throwable e, int round, long nanos) {
 
     }
 
@@ -30,12 +32,23 @@ public interface Retry<T> {
     }
 
     /**
-     * 判断proceed结果是否符合预期
+     * 循环后置条件
      *
      * @param ret proceed执行结果
      * @return 是否需要继续重试
      */
-    default boolean canOutBreak(T ret, int round, long nanos) {
+    default boolean postCondition(T ret, int round, long nanos) {
+        return true;
+    }
+
+
+    /**
+     * 循环前置条件
+     *
+     * @param round 执行次数
+     * @return 是否可执行
+     */
+    default boolean preCondition(int round) {
         return true;
     }
 
