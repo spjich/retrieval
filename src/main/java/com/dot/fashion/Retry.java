@@ -14,7 +14,7 @@ public interface Retry<T> {
      * proceed 报错时回调
      *
      * @param e     ex
-     * @param round 执行次数
+     * @param round 重试次数
      * @param nanos 消耗时间
      */
     default void whenError(Throwable e, int round, long nanos) {
@@ -45,7 +45,7 @@ public interface Retry<T> {
     /**
      * 循环前置条件
      *
-     * @param round 执行次数
+     * @param round 重试次数
      * @return 是否可执行
      */
     default boolean preCondition(int round) {

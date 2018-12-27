@@ -13,7 +13,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
  * since:2018/12/19
  */
 @SuppressWarnings({"WeakerAccess", "JavaDoc"})
-public class RetryLoop {
+public final class RetryLoop {
 
     private RetryConfig retryConfig;
     private Thread hook;
@@ -110,25 +110,25 @@ public class RetryLoop {
         hook = Thread.currentThread();
         state = State.RUNNING;
         T t = null;
-        Integer num = retryConfig.getNum();
+        Integer retryNum = retryConfig.getNum();
         int i = 0;
         long start = System.nanoTime();
         for (; state == State.RUNNING; ) {
             try {
-                i++;
                 if (!retry.preCondition(i)) {
                     break;
                 }
                 t = retry.proceed();
             } catch (InterruptedException in) {
                 break;
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 retry.whenError(e, i, System.nanoTime() - start);
             }
             if (retry.postCondition(t, i, System.nanoTime() - start)) {
                 break;
             }
-            if (num > 0 && i >= num) {
+            i++;
+            if (retryNum >= 0 && i > retryNum) {
                 break;
             }
         }

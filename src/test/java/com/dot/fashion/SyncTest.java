@@ -16,13 +16,24 @@ public class SyncTest {
     @Test
     public void sync() throws InterruptedException, ExecutionException, TimeoutException {
         RetryConfig config = new RetryConfig();
-        config.setNum(2);
+        config.setNum(2);//重试2次
         config.setExecutorService(Executors.newCachedThreadPool());
         System.out.println("主线程id:" + Thread.currentThread().getId());
-        System.out.println("返回结果" + new RetryBuilder().setConfig(config).build().sync(() -> {
-            System.out.println("执行线程id:" + Thread.currentThread().getId());
-            return "success";
-        }));
+        System.out.println("返回结果" + new RetryBuilder().setConfig(config).build().sync(
+                new Retry<String>() {
+                    @Override
+                    public String proceed() throws Exception {
+                        System.out.println("执行线程id:" + Thread.currentThread().getId());
+                        return "success";
+                    }
+
+                    @Override
+                    public boolean postCondition(String ret, int round, long nanos) {
+                        return false;
+                    }
+                }
+
+        ));
     }
 
     @Test(timeout = 5000)

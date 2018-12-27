@@ -24,16 +24,35 @@ public class RetryBuilder {
         return this;
     }
 
-    public RetryBuilder num(int num) {
+    /**
+     * 设置重试次数
+     *
+     * @param num
+     * @return
+     */
+    public RetryBuilder retry(int num) {
         retryConfig.setNum(num);
         return this;
     }
 
+    /**
+     * 设置线程池
+     *
+     * @param pool
+     * @return
+     */
     public RetryBuilder pool(ExecutorService pool) {
         retryConfig.setExecutorService(pool);
         return this;
     }
 
+    /**
+     * 设置超时时间
+     * 仅在非proceed模式下生效
+     *
+     * @param millSeconds
+     * @return
+     */
     public RetryBuilder timeout(long millSeconds) {
         retryConfig.setTimeLimitMilli(millSeconds);
         return this;
