@@ -1,4 +1,4 @@
-package com.dot.fashion;
+package com.dot.fashion.retrieval.core;
 
 import org.junit.Test;
 import org.slf4j.Logger;
