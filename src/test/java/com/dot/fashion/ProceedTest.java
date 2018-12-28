@@ -5,6 +5,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.Executors;
+
 /**
  * title:
  * author:吉
@@ -19,6 +21,9 @@ public class ProceedTest {
             logger.info("success");
             return "";
         });
+
+        new RetryBuilder().retry(10).delay(1000).timeout(5000).pool(Executors.newSingleThreadExecutor()).build().async((round, nanos) -> "success");
+
     }
 
 

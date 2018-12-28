@@ -49,17 +49,21 @@ new RetryBuilder().num(10).timeout(5000).build().sync(() -> "success");
 业务线程与重试线程不同
 异步非阻塞模式，重试+超时时间设定+自定义线程池
 ``` java
-new RetryBuilder().num(10).timeout(5000).pool(Executors.newSingleThreadExecutor()).build().async(() -> "success");
+new RetryBuilder().retry(10).delay(1000).timeout(5000).pool(Executors.newSingleThreadExecutor()).build().async((round, nanos) -> "success");
 ```
 调用线程非阻塞，重试会在线程池中继续运行，到达超时时间后自动停止
 
 ## 核心参数解释
 
-num: 即重试次数
+retry: 即重试次数
 
-timeout：proceed模式不支持
+delay: 每次重试间隔
+
+timeout：执行超时时间(proceed模式不支持)
 
 pool：自定义线程池
+
+
 
 ## 回调支持
 
