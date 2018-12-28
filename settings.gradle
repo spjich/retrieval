@@ -1,2 +1,3 @@
 rootProject.name = 'retrieval'
+include 'retrieval-core'
 
