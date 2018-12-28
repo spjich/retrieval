@@ -18,6 +18,9 @@ class RetryConfig {
     //异步执行线程池
     private ExecutorService executorService;
 
+    //每次重试等待时间
+    private long delayMilli;
+
 
     Integer getNum() {
         return num;
@@ -44,12 +47,21 @@ class RetryConfig {
         this.executorService = executorService;
     }
 
+    public long getDelayMilli() {
+        return delayMilli;
+    }
+
+    public void setDelayMilli(long delayMilli) {
+        this.delayMilli = delayMilli;
+    }
+
     RetryConfig() {
     }
 
-    RetryConfig(Integer num, long timeLimitMilli, ExecutorService executorService) {
+    public RetryConfig(Integer num, long timeLimitMilli, ExecutorService executorService, long delayMilli) {
         this.num = num;
         this.timeLimitMilli = timeLimitMilli;
         this.executorService = executorService;
+        this.delayMilli = delayMilli;
     }
 }

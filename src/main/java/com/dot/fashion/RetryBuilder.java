@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 public class RetryBuilder {
     public static final int FOREVER = -1;
     private RetryConfig retryConfig;
-    private static final RetryConfig Default = new RetryConfig(1, -1, Executors.newCachedThreadPool());
+    private static final RetryConfig Default = new RetryConfig(1, -1, Executors.newCachedThreadPool(), 0);
 
 
     public RetryBuilder() {
@@ -43,6 +43,17 @@ public class RetryBuilder {
      */
     public RetryBuilder pool(ExecutorService pool) {
         retryConfig.setExecutorService(pool);
+        return this;
+    }
+
+    /**
+     * 重试间隔设置
+     *
+     * @param mills
+     * @return
+     */
+    public RetryBuilder delay(long mills) {
+        retryConfig.setTimeLimitMilli(mills);
         return this;
     }
 

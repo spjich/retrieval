@@ -15,6 +15,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 @SuppressWarnings({"WeakerAccess", "JavaDoc"})
 public final class RetryLoop {
 
+    public static long startNanos = System.nanoTime();
     private RetryConfig retryConfig;
     private Thread hook;
     private volatile State state;
@@ -109,30 +110,39 @@ public final class RetryLoop {
     private <T> T loop(Retry<T> retry) {
         hook = Thread.currentThread();
         state = State.RUNNING;
+        startNanos = System.nanoTime();
         T t = null;
         Integer retryNum = retryConfig.getNum();
-        int i = 0;
-        long start = System.nanoTime();
+        int round = 0;
         for (; state == State.RUNNING; ) {
             try {
-                if (!retry.preCondition(i)) {
+                if (!retry.preCondition(round, diff())) {
                     break;
                 }
-                t = retry.proceed();
+                t = retry.proceed(round, diff());
             } catch (InterruptedException in) {
                 break;
             } catch (Exception e) {
-                retry.whenError(e, i, System.nanoTime() - start);
+                retry.whenError(e, round, diff());
             }
-            if (retry.postCondition(t, i, System.nanoTime() - start)) {
+            if (retry.postCondition(t, round, diff())) {
                 break;
             }
-            i++;
-            if (retryNum >= 0 && i > retryNum) {
+            round++;
+            if (retryNum >= 0 && round > retryNum) {
+                break;
+            }
+            try {
+                MILLISECONDS.sleep(retryConfig.getDelayMilli());
+            } catch (InterruptedException e) {
                 break;
             }
         }
-        return retry.whenFinish(t);
+        return retry.whenFinish(t, round, diff());
+    }
+
+    private long diff() {
+        return System.nanoTime() - startNanos;
     }
 
     enum State {

@@ -8,7 +8,7 @@ package com.dot.fashion;
 @FunctionalInterface
 public interface Retry<T> {
 
-    T proceed() throws Exception;
+    T proceed(int round, long nanos) throws Exception;
 
     /**
      * proceed 报错时回调
@@ -27,7 +27,7 @@ public interface Retry<T> {
      * @param ret proceed执行结果
      * @return 处理后结果
      */
-    default T whenFinish(T ret) {
+    default T whenFinish(T ret, int round, long nanos) {
         return ret;
     }
 
@@ -48,7 +48,7 @@ public interface Retry<T> {
      * @param round 重试次数
      * @return 是否可执行
      */
-    default boolean preCondition(int round) {
+    default boolean preCondition(int round, long nanos) {
         return true;
     }
 
