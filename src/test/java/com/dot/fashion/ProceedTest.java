@@ -2,6 +2,8 @@ package com.dot.fashion;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * title:
@@ -9,11 +11,12 @@ import org.junit.Test;
  * since:2018/12/21
  */
 public class ProceedTest {
+    private Logger logger = LoggerFactory.getLogger(ProceedTest.class);
 
     @Test
     public void simple() {
-        new RetryBuilder().build().proceed(() -> {
-            System.out.println("success");
+        new RetryBuilder().build().proceed((round, nanos) -> {
+            logger.info("success");
             return "";
         });
     }
@@ -23,24 +26,25 @@ public class ProceedTest {
     public void proceed() {
         RetryConfig config = new RetryConfig();
         config.setNum(2);
-        System.out.println(
+        config.setDelayMilli(5000);
+        logger.info("" +
                 new RetryBuilder().setConfig(config).build().proceed(
                         new Retry<Integer>() {
                             @Override
-                            public Integer proceed() {
-                                System.out.println("success");
+                            public Integer proceed(int round, long nanos) {
+                                logger.info("success");
                                 return 1;
                             }
 
                             @Override
-                            public Integer whenFinish(Integer ret) {
-                                System.out.println("finish");
+                            public Integer whenFinish(Integer ret, int round, long nanos) {
+                                logger.info("finish");
                                 return 999;
                             }
 
                             @Override
                             public boolean postCondition(Integer ret, int round, long nanos) {
-                                System.out.println(round);
+                                logger.info(round + "");
                                 return false;
                             }
                         }));
@@ -52,27 +56,27 @@ public class ProceedTest {
             RetryConfig config = new RetryConfig();
             config.setNum(-1);
             long id = Thread.currentThread().getId();
-            System.out.println(
+            logger.info("" +
                     new RetryBuilder().setConfig(config).build().proceed(
                             new Retry<Integer>() {
                                 @Override
-                                public Integer proceed() {
+                                public Integer proceed(int round, long nanos) {
                                     Assert.assertEquals(id, Thread.currentThread().getId());
-                                    System.out.println("success");
+                                    logger.info("success");
                                     return 1;
                                 }
 
                                 @Override
-                                public Integer whenFinish(Integer ret) {
+                                public Integer whenFinish(Integer ret, int round, long nanos) {
                                     Assert.assertEquals(id, Thread.currentThread().getId());
-                                    System.out.println("finish");
+                                    logger.info("finish");
                                     return 999;
                                 }
 
                                 @Override
                                 public boolean postCondition(Integer ret, int round, long nanos) {
                                     Assert.assertEquals(id, Thread.currentThread().getId());
-                                    System.out.println(round);
+                                    logger.info(round + "");
                                     return false;
                                 }
                             }));

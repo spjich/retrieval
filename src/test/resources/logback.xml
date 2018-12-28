@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="1 minutes">
+
+    <property name="LAYOUT_PATTERN"
+              value="%date{yyyy-MM-dd HH:mm:ss} [%p]-[%thread][%logger][%L] %m%n"/>
+    <!--控制台-->
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <Target>System.out</Target>
+        <encoder>
+            <Pattern>${LAYOUT_PATTERN}</Pattern>
+        </encoder>
+    </appender>
+    <!--TRACE<DEBUG<INFO<WARN<ERROR-->
+    <root level="INFO">
+        <appender-ref ref="stdout"/>
+    </root>
+
+</configuration>
