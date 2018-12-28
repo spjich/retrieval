@@ -123,7 +123,9 @@ public final class RetryLoop {
             } catch (InterruptedException in) {
                 break;
             } catch (Exception e) {
-                retry.whenError(e, round, diff());
+                if (retry.whenError(e, round, diff())) {
+                    break;
+                }
             }
             if (retry.postCondition(t, round, diff())) {
                 break;

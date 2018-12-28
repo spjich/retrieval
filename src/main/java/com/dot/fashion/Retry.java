@@ -16,9 +16,10 @@ public interface Retry<T> {
      * @param e     ex
      * @param round 重试次数
      * @param nanos 消耗时间
+     * @return 是否跳出循环
      */
-    default void whenError(Throwable e, int round, long nanos) {
-
+    default boolean whenError(Throwable e, int round, long nanos) {
+        return true;
     }
 
     /**

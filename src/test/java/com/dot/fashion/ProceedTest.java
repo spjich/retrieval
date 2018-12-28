@@ -30,7 +30,7 @@ public class ProceedTest {
     @Test
     public void proceed() {
         RetryConfig config = new RetryConfig();
-        config.setNum(2);
+        config.setNum(1);
         config.setDelayMilli(5000);
         logger.info("" +
                 new RetryBuilder().setConfig(config).build().proceed(
