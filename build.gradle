@@ -1,2 +1,37 @@
 group 'com.dot.fashion'
 version '1.0-SNAPSHOT'
+
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven-publish'
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+    [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+    repositories {
+        mavenCentral()
+    }
+
+    sourceSets {
+        main {
+            java {
+                srcDir 'src/main/java'
+            }
+            resources {
+                srcDir 'src/main/resources'
+            }
+        }
+    }
+
+    // 上传jar和源码
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                from components.java    //发布java组件
+                groupId "$project.group"
+                artifactId "$project.name"
+                version "$project.version"
+            }
+        }
+    }
+}

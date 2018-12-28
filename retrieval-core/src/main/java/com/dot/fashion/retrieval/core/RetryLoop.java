@@ -1,4 +1,4 @@
-package retrieval.core;
+package com.dot.fashion.retrieval.core;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
