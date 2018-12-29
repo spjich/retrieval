@@ -11,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * title:
  * author:吉
@@ -27,7 +29,12 @@ public class ApplicationTest {
 
     @Test
     public void test() {
-        logger.info("执行结果：" + testService.test(2));
+        logger.info("执行结果：" + testService.test(1));
+        try {
+            TimeUnit.HOURS.sleep(1);
+        } catch (InterruptedException e) {
+
+        }
     }
 
 }

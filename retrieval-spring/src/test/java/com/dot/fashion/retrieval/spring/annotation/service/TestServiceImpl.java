@@ -21,10 +21,8 @@ public class TestServiceImpl implements TestService {
 
     @Retrieval(retry = 3,
             delayMilli = 1000,
-            module = RetryModule.ASYNC,
-            timeLimitMilli = 5000,
-            continueOn = IllegalArgumentException.class,
-            failOn = RuntimeException.class)
+            module = RetryModule.SYNC,
+            timeLimitMilli = 15000)
     public List<String> test(int a) {
         logger.info("执行test");
         if (a == 1) {
@@ -36,10 +34,16 @@ public class TestServiceImpl implements TestService {
                 TimeUnit.HOURS.sleep(1);
             } catch (InterruptedException ignored) {
             }
+        } else if (a == 4) {
+            try {
+                TimeUnit.SECONDS.sleep(10);
+            } catch (InterruptedException ignored) {
+            }
         }
         List<String> strings = new ArrayList<>();
         strings.add("1");
         strings.add("2");
+        logger.info("service return");
         return strings;
     }
 }

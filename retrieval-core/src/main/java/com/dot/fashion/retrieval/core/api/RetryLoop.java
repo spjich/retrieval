@@ -37,7 +37,7 @@ public abstract class RetryLoop {
      * @return
      */
     protected <T> T proceed(Retryable<T> retryable) {
-        return adapt(retryable);
+        return loop(retryable);
     }
 
     /**
@@ -53,7 +53,7 @@ public abstract class RetryLoop {
      */
     protected <T> T sync(Retryable<T> retryable) throws InterruptedException, ExecutionException {
         CompletableFuture<T> completableFuture = CompletableFuture
-                .supplyAsync(() -> adapt(retryable), retryConfig.getExecutorService());
+                .supplyAsync(() -> loop(retryable), retryConfig.getExecutorService());
         long timeLimit = retryConfig.getTimeLimitMilli();
         if (timeLimit > 0) {
             try {
@@ -80,7 +80,7 @@ public abstract class RetryLoop {
      */
     protected <T> void async(Retryable<T> retryable) {
         CompletableFuture<Void> retFuture =
-                CompletableFuture.runAsync(() -> adapt(retryable), retryConfig.getExecutorService());
+                CompletableFuture.runAsync(() -> loop(retryable), retryConfig.getExecutorService());
         if (retryConfig.getTimeLimitMilli() > 0) {
             CompletableFuture<Void> promise = new CompletableFuture<>();
             CompletableFuture.runAsync(() -> {
@@ -95,15 +95,6 @@ public abstract class RetryLoop {
                 retryable.whenTimeout();
                 return null;
             });
-        }
-    }
-
-
-    private <T> T adapt(Retryable<T> retryable) {
-        if (retryable instanceof ConditionRetryable) {
-            return loop((ConditionRetryable<T>) retryable);
-        } else {
-            return loop(retryable);
         }
     }
 
