@@ -1,10 +1,14 @@
 package com.dot.fashion.retrieval.spring.annotation.service;
 
 import com.dot.fashion.retrieval.spring.annotation.Retrieval;
+import com.dot.fashion.retrieval.spring.annotation.RetryModule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * title:
@@ -13,24 +17,29 @@ import java.util.List;
  */
 @Service
 public class TestServiceImpl implements TestService {
+    private Logger logger = LoggerFactory.getLogger(TestServiceImpl.class);
 
-    @Retrieval(retry = 10, delayMilli = 1000)
+    @Retrieval(retry = 3,
+            delayMilli = 1000,
+            module = RetryModule.SYNC,
+            timeLimitMilli = 5000,
+            continueOn = IllegalArgumentException.class,
+            failOn = RuntimeException.class)
     public List<String> test(int a) {
-        System.out.println("执行test");
+        logger.info("执行test");
         if (a == 1) {
             throw new RuntimeException();
-        }
-        if (a == 2) {
+        } else if (a == 2) {
             throw new IllegalArgumentException();
+        } else if (a == 3) {
+            try {
+                TimeUnit.HOURS.sleep(1);
+            } catch (InterruptedException ignored) {
+            }
         }
         List<String> strings = new ArrayList<>();
         strings.add("1");
         strings.add("2");
         return strings;
     }
-
-//    public static void main(String[] args) throws NoSuchMethodException {
-//     Method[] methods= TestServiceImpl.class.getDeclaredMethods();
-//        System.out.println(methods);
-//     }
 }

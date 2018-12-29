@@ -1,5 +1,8 @@
 package com.dot.fashion.retrieval.core;
 
+import com.dot.fashion.retrieval.core.exception.ProceedException;
+import com.dot.fashion.retrieval.core.exception.StopException;
+
 import java.util.function.Supplier;
 
 /**
@@ -16,7 +19,7 @@ public class SpringRetry<T> implements Retry<T> {
     }
 
     @Override
-    public T proceed(int round, long nanos) throws Exception {
+    public T proceed(int round, long nanos) throws ProceedException, StopException {
         return supplier.get();
     }
 }

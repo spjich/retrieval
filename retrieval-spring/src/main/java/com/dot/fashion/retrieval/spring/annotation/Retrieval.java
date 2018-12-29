@@ -1,8 +1,5 @@
 package com.dot.fashion.retrieval.spring.annotation;
 
-import org.springframework.context.annotation.Import;
-import org.springframework.stereotype.Component;
-
 import java.lang.annotation.*;
 
 /**
@@ -14,8 +11,9 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-@Import(Component.class)
 public @interface Retrieval {
+
+    int FOREVER = -1;
 
     int retry() default 0;
 
@@ -27,5 +25,5 @@ public @interface Retrieval {
 
     Class<? extends Exception>[] failOn() default {};
 
-    Class<? extends Exception>[] continueWhen() default {};
+    Class<? extends Exception>[] continueOn() default {};
 }

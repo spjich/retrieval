@@ -76,7 +76,7 @@ public class RetryBuilder {
     }
 
     public RetryBuilder continueWhen(Class<? extends Exception>[] exceptions) {
-        retryConfig.setContinueWhen(exceptions);
+        retryConfig.setContinueOn(exceptions);
         return this;
     }
 

@@ -1,5 +1,8 @@
 package com.dot.fashion.retrieval.core;
 
+import com.dot.fashion.retrieval.core.exception.ProceedException;
+import com.dot.fashion.retrieval.core.exception.StopException;
+
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -52,7 +55,7 @@ public final class RetryLoop {
      */
     public <T> T sync(Retry<T> retry) throws InterruptedException, ExecutionException {
         CompletableFuture<T> completableFuture = CompletableFuture
-                .supplyAsync(() -> loop(retry), retryConfig.getExecutorService());
+                .supplyAsync(() -> adapt(retry), retryConfig.getExecutorService());
         long timeLimit = retryConfig.getTimeLimitMilli();
         if (timeLimit > 0) {
             try {
@@ -79,7 +82,7 @@ public final class RetryLoop {
      */
     public <T> void async(Retry<T> retry) {
         CompletableFuture<Void> retFuture =
-                CompletableFuture.runAsync(() -> loop(retry), retryConfig.getExecutorService());
+                CompletableFuture.runAsync(() -> adapt(retry), retryConfig.getExecutorService());
         if (retryConfig.getTimeLimitMilli() > 0) {
             CompletableFuture<Void> promise = new CompletableFuture<>();
             CompletableFuture.runAsync(() -> {
@@ -161,27 +164,26 @@ public final class RetryLoop {
         Integer retryNum = retryConfig.getRetry();
         int round = 0;
         Class<? extends Exception>[] failOn = retryConfig.getFailOn();
-        Class[] continueWhen = retryConfig.getContinueWhen();
+        Class[] continueOn = retryConfig.getContinueOn();
         for (; state == State.RUNNING; ) {
             try {
                 return retry.proceed(round, diff());
-            } catch (InterruptedException in) {
+            } catch (StopException in) {
                 break;
-            } catch (Exception e) {
-                if (Stream.of(failOn).anyMatch((clz) -> e.getClass() == clz)) {
-                    return null;
+            } catch (ProceedException e) {
+                if (Stream.of(failOn).anyMatch((clz) -> e.getCause().getClass() == clz)) {
+                    throw new RuntimeException(e);
                 }
-                if (continueWhen.length != 0) {
-                    if (Stream.of(continueWhen).noneMatch((clz) -> e.getClass() == clz)) {
-                        return null;
+                if (continueOn.length != 0) {
+                    if (Stream.of(continueOn).noneMatch((clz) -> e.getCause().getClass() == clz)) {
+                        throw new RuntimeException(e);
                     }
-                } else {
-                    round++;
-                    if (retryNum >= 0 && round > retryNum) {
-                        break;
-                    }
-                    if (sleepIfInterrupt()) break;
                 }
+                round++;
+                if (retryNum >= 0 && round > retryNum) {
+                    break;
+                }
+                if (sleepIfInterrupt()) break;
             }
         }
         return null;

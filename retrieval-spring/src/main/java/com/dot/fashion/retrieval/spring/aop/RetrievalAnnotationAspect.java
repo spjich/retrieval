@@ -1,6 +1,8 @@
 package com.dot.fashion.retrieval.spring.aop;
 
 import com.dot.fashion.retrieval.core.SpringRetry;
+import com.dot.fashion.retrieval.core.exception.ProceedException;
+import com.dot.fashion.retrieval.core.exception.StopException;
 import com.dot.fashion.retrieval.spring.annotation.Retrieval;
 import com.dot.fashion.retrieval.spring.annotation.RetrievalParser;
 import com.dot.fashion.retrieval.spring.annotation.RetrievalSpringContext;
@@ -31,8 +33,10 @@ public class RetrievalAnnotationAspect {
         SpringRetry<T> retry = new SpringRetry<>(() -> {
             try {
                 return (T) pjp.proceed();
+            } catch (InterruptedException e) {
+                throw new StopException(e);
             } catch (Throwable throwable) {
-                throw new RuntimeException(throwable);
+                throw new ProceedException(throwable);
             }
         });
         switch (context.getModule()) {

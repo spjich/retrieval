@@ -23,7 +23,7 @@ class RetryConfig {
     //失败跳出
     private Class<? extends Exception>[] failOn;
     //失败继续
-    private Class<? extends Exception>[] continueWhen;
+    private Class<? extends Exception>[] continueOn;
 
 
     Integer getRetry() {
@@ -67,12 +67,12 @@ class RetryConfig {
         this.failOn = failOn;
     }
 
-    public Class<? extends Exception>[] getContinueWhen() {
-        return continueWhen;
+    public Class<? extends Exception>[] getContinueOn() {
+        return continueOn;
     }
 
-    public void setContinueWhen(Class<? extends Exception>[] continueWhen) {
-        this.continueWhen = continueWhen;
+    public void setContinueOn(Class<? extends Exception>[] continueOn) {
+        this.continueOn = continueOn;
     }
 
     RetryConfig() {

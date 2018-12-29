@@ -3,6 +3,8 @@ package com.dot.fashion.retrieval.spring;
 import com.dot.fashion.retrieval.spring.annotation.service.TestService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,13 +21,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 @ComponentScan
 @EnableAutoConfiguration
 public class ApplicationTest {
-
+    private Logger logger = LoggerFactory.getLogger(ApplicationTest.class);
     @Autowired
     private TestService testService;
 
     @Test
     public void test() {
-        System.out.println(testService.test(1));
+        logger.info("执行结果：" + testService.test(2));
     }
 
 }

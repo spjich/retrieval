@@ -15,7 +15,7 @@ public final class RetrievalParser {
                 .retry(retrieval.retry())
                 .delay(retrieval.delayMilli())
                 .failOn(retrieval.failOn())
-                .continueWhen(retrieval.continueWhen())
+                .continueWhen(retrieval.continueOn())
                 .timeout(retrieval.timeLimitMilli()).build();
         return new RetrievalSpringContext(retrieval.module(), retryLoop);
     }
