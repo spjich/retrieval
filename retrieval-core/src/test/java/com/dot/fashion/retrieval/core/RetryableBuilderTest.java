@@ -9,7 +9,7 @@ import org.junit.Test;
  * author:吉
  * since:2018/12/21
  */
-public class RetryBuilderTest {
+public class RetryableBuilderTest {
 
     @Test
     public void buildTest() {

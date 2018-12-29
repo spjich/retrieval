@@ -1,7 +1,7 @@
 package com.dot.fashion.retrieval.core;
 
-import com.dot.fashion.retrieval.core.api.Retry;
-import com.dot.fashion.retrieval.core.api.RetryAble;
+import com.dot.fashion.retrieval.core.api.Retryable;
+import com.dot.fashion.retrieval.core.api.RetryLoop;
 
 import java.util.concurrent.ExecutionException;
 
@@ -11,33 +11,33 @@ import java.util.concurrent.ExecutionException;
  * since:2018/12/19
  */
 
-public final class CallbackRetryLoop extends RetryAble {
+public final class CallbackRetryLoop extends RetryLoop {
 
 
     public CallbackRetryLoop(RetryConfig retryConfig) {
         super(retryConfig);
     }
 
-    public <T> T proceed(Retry<T> retry) {
-        return super.proceed(retry);
+    public <T> T proceed(Retryable<T> retryable) {
+        return super.proceed(retryable);
     }
 
-    public <T> T sync(Retry<T> retry) throws InterruptedException, ExecutionException {
-        return super.sync(retry);
+    public <T> T sync(Retryable<T> retryable) throws InterruptedException, ExecutionException {
+        return super.sync(retryable);
     }
 
-    public <T> void async(Retry<T> retry) {
-        super.async(retry);
+    public <T> void async(Retryable<T> retryable) {
+        super.async(retryable);
     }
 
     /**
      * 重试循环
      *
-     * @param retry
+     * @param retryable
      * @param <T>
      * @return
      */
-    protected <T> T loop(Retry<T> retry) {
+    protected <T> T loop(Retryable<T> retryable) {
         hook = Thread.currentThread();
         state = State.RUNNING;
         startNanos = System.nanoTime();
@@ -46,18 +46,18 @@ public final class CallbackRetryLoop extends RetryAble {
         int round = 0;
         for (; state == State.RUNNING; ) {
             try {
-                if (!retry.preCondition(round, diff())) {
+                if (!retryable.preCondition(round, diff())) {
                     break;
                 }
-                t = retry.proceed(round, diff());
+                t = retryable.proceed(round, diff());
             } catch (InterruptedException in) {
                 break;
             } catch (Exception e) {
-                if (retry.whenError(e, round, diff())) {
+                if (retryable.whenError(e, round, diff())) {
                     break;
                 }
             }
-            if (retry.postCondition(t, round, diff())) {
+            if (retryable.postCondition(t, round, diff())) {
                 break;
             }
             round++;
@@ -66,6 +66,6 @@ public final class CallbackRetryLoop extends RetryAble {
             }
             if (sleepIfInterrupt()) break;
         }
-        return retry.whenFinish(t, round, diff());
+        return retryable.whenFinish(t, round, diff());
     }
 }

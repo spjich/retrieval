@@ -11,7 +11,7 @@ import java.util.function.Supplier;
  * since:2018/12/28
  */
 @FunctionalInterface
-public interface ConditionRetry<T> extends Retry<T>, Supplier<T> {
+public interface ConditionRetryable<T> extends Retryable<T>, Supplier<T> {
 
     @Override
     default T proceed(int round, long nanos) throws ProceedException, StopException {

@@ -2,6 +2,7 @@ package com.dot.fashion.retrieval.spring.annotation;
 
 
 import com.dot.fashion.retrieval.spring.annotation.service.TestService;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.lang.reflect.Method;
@@ -15,6 +16,7 @@ public class RetrievalParserTest {
 
 
     @Test
+    @Ignore
     public void parse() throws InstantiationException, IllegalAccessException {
         Method[] declaredMethods = TestService.class.getDeclaredMethods();
         for (Method method : declaredMethods) {

@@ -17,13 +17,13 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
  * since:2018/12/29
  */
 @SuppressWarnings({"JavaDoc"})
-public abstract class RetryAble {
+public abstract class RetryLoop {
     protected long startNanos = System.nanoTime();
     protected RetryConfig retryConfig;
     protected Thread hook;
     protected volatile CallbackRetryLoop.State state;
 
-    protected RetryAble(RetryConfig retryConfig) {
+    protected RetryLoop(RetryConfig retryConfig) {
         this.retryConfig = retryConfig;
     }
 
@@ -32,12 +32,12 @@ public abstract class RetryAble {
      * 方式：同步
      * 不支持timeout
      *
-     * @param retry
+     * @param retryable
      * @param <T>
      * @return
      */
-    protected <T> T proceed(Retry<T> retry) {
-        return adapt(retry);
+    protected <T> T proceed(Retryable<T> retryable) {
+        return adapt(retryable);
     }
 
     /**
@@ -45,15 +45,15 @@ public abstract class RetryAble {
      * 方式：同步
      * 支持timeout
      *
-     * @param retry
+     * @param retryable
      * @param <T>
      * @return
      * @throws InterruptedException
      * @throws ExecutionException
      */
-    protected <T> T sync(Retry<T> retry) throws InterruptedException, ExecutionException {
+    protected <T> T sync(Retryable<T> retryable) throws InterruptedException, ExecutionException {
         CompletableFuture<T> completableFuture = CompletableFuture
-                .supplyAsync(() -> adapt(retry), retryConfig.getExecutorService());
+                .supplyAsync(() -> adapt(retryable), retryConfig.getExecutorService());
         long timeLimit = retryConfig.getTimeLimitMilli();
         if (timeLimit > 0) {
             try {
@@ -61,7 +61,7 @@ public abstract class RetryAble {
             } catch (TimeoutException e) {
                 //停止任务
                 stop();
-                retry.whenTimeout();
+                retryable.whenTimeout();
                 return null;
             }
         } else {
@@ -74,13 +74,13 @@ public abstract class RetryAble {
      * 方式：异步
      * 不支持timeout
      *
-     * @param retry
+     * @param retryable
      * @param <T>
      * @return
      */
-    protected <T> void async(Retry<T> retry) {
+    protected <T> void async(Retryable<T> retryable) {
         CompletableFuture<Void> retFuture =
-                CompletableFuture.runAsync(() -> adapt(retry), retryConfig.getExecutorService());
+                CompletableFuture.runAsync(() -> adapt(retryable), retryConfig.getExecutorService());
         if (retryConfig.getTimeLimitMilli() > 0) {
             CompletableFuture<Void> promise = new CompletableFuture<>();
             CompletableFuture.runAsync(() -> {
@@ -92,18 +92,18 @@ public abstract class RetryAble {
             });
             retFuture.applyToEither(promise, Function.identity()).exceptionally(throwable -> {
                 stop();
-                retry.whenTimeout();
+                retryable.whenTimeout();
                 return null;
             });
         }
     }
 
 
-    private <T> T adapt(Retry<T> retry) {
-        if (retry instanceof ConditionRetry) {
-            return loop((ConditionRetry<T>) retry);
+    private <T> T adapt(Retryable<T> retryable) {
+        if (retryable instanceof ConditionRetryable) {
+            return loop((ConditionRetryable<T>) retryable);
         } else {
-            return loop(retry);
+            return loop(retryable);
         }
     }
 
@@ -130,6 +130,6 @@ public abstract class RetryAble {
     }
 
 
-    protected abstract <T> T loop(Retry<T> retry);
+    protected abstract <T> T loop(Retryable<T> retryable);
 
 }

@@ -1,6 +1,6 @@
 package com.dot.fashion.retrieval.spring.annotation;
 
-import com.dot.fashion.retrieval.core.CallbackRetryLoop;
+import com.dot.fashion.retrieval.core.ConditionRetryLoop;
 
 /**
  * title:
@@ -11,7 +11,7 @@ public final class RetrievalSpringContext {
 
     private RetryModule module;
 
-    private CallbackRetryLoop retryLoop;
+    private ConditionRetryLoop retryLoop;
 
 
     public RetryModule getModule() {
@@ -22,15 +22,15 @@ public final class RetrievalSpringContext {
         this.module = module;
     }
 
-    public CallbackRetryLoop getRetryLoop() {
+    public ConditionRetryLoop getRetryLoop() {
         return retryLoop;
     }
 
-    public void setRetryLoop(CallbackRetryLoop retryLoop) {
+    public void setRetryLoop(ConditionRetryLoop retryLoop) {
         this.retryLoop = retryLoop;
     }
 
-    RetrievalSpringContext(RetryModule module, CallbackRetryLoop retryLoop) {
+    RetrievalSpringContext(RetryModule module, ConditionRetryLoop retryLoop) {
         this.module = module;
         this.retryLoop = retryLoop;
     }

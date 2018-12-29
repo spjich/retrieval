@@ -1,6 +1,6 @@
 package com.dot.fashion.retrieval.core;
 
-import com.dot.fashion.retrieval.core.api.Retry;
+import com.dot.fashion.retrieval.core.api.Retryable;
 import com.dot.fashion.retrieval.core.builder.RetryBuilder;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -27,7 +27,7 @@ public class SyncTest {
         config.setExecutorService(Executors.newCachedThreadPool());
         logger.info("主线程id:" + Thread.currentThread().getId());
         logger.info("返回结果" + new RetryBuilder().setConfig(config).build().sync(
-                new Retry<String>() {
+                new Retryable<String>() {
                     @Override
                     public String proceed(int round, long nanos) throws Exception {
                         logger.info("执行线程id:" + Thread.currentThread().getId());
@@ -51,7 +51,7 @@ public class SyncTest {
         config.setTimeLimitMilli(3000);
         config.setExecutorService(Executors.newCachedThreadPool());
         logger.info("主线程id:" + Thread.currentThread().getId());
-        logger.info("返回结果" + new RetryBuilder().setConfig(config).build().sync(new Retry<String>() {
+        logger.info("返回结果" + new RetryBuilder().setConfig(config).build().sync(new Retryable<String>() {
             @Override
             public String proceed(int round, long nanos) throws InterruptedException {
                 logger.info("执行线程id:{},round{}", Thread.currentThread().getId(), round);

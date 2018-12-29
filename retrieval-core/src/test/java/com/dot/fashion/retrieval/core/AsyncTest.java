@@ -1,6 +1,6 @@
 package com.dot.fashion.retrieval.core;
 
-import com.dot.fashion.retrieval.core.api.Retry;
+import com.dot.fashion.retrieval.core.api.Retryable;
 import com.dot.fashion.retrieval.core.builder.RetryBuilder;
 import org.junit.Assert;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public class AsyncTest {
         retryConfig.setTimeLimitMilli(5000);
         retryConfig.setRetry(-1);
         new RetryBuilder().setConfig(retryConfig).build().async(
-                new Retry<Integer>() {
+                new Retryable<Integer>() {
                     @Override
                     public Integer proceed(int round, long nanos) throws InterruptedException {
                         logger.info("id=" + Thread.currentThread().getId() + "|async A");
@@ -63,7 +63,7 @@ public class AsyncTest {
         TimeUnit.SECONDS.sleep(6);
         logger.info("启动第二个任务");
         retryConfig.setTimeLimitMilli(5000);
-        new RetryBuilder().setConfig(retryConfig).build().async(new Retry<Integer>() {
+        new RetryBuilder().setConfig(retryConfig).build().async(new Retryable<Integer>() {
             @Override
             public Integer proceed(int round, long nanos) throws InterruptedException {
                 logger.info("id=" + Thread.currentThread().getId() + "|async B");
@@ -89,7 +89,7 @@ public class AsyncTest {
         retryConfig.setTimeLimitMilli(5000);
         retryConfig.setRetry(-1);
         new RetryBuilder().setConfig(retryConfig).build().async(
-                new Retry<Integer>() {
+                new Retryable<Integer>() {
                     @Override
                     public Integer proceed(int round, long nanos) throws InterruptedException {
                         logger.info("id=" + Thread.currentThread().getId() + "|async A");
@@ -110,7 +110,7 @@ public class AsyncTest {
         );
         retryConfig.setTimeLimitMilli(8000);
         new RetryBuilder().setConfig(retryConfig).build().async(
-                new Retry<Integer>() {
+                new Retryable<Integer>() {
                     @Override
                     public Integer proceed(int round, long nanos) throws InterruptedException {
                         logger.info("id=" + Thread.currentThread().getId() + "|async B");

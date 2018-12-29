@@ -6,7 +6,7 @@ package com.dot.fashion.retrieval.core.api;
  * since:2018/12/19
  */
 @FunctionalInterface
-public interface Retry<T> {
+public interface Retryable<T> {
 
     T proceed(int round, long nanos) throws Exception;
 

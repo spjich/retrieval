@@ -1,6 +1,6 @@
 package com.dot.fashion.retrieval.core;
 
-import com.dot.fashion.retrieval.core.api.Retry;
+import com.dot.fashion.retrieval.core.api.Retryable;
 import com.dot.fashion.retrieval.core.builder.RetryBuilder;
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,7 +30,7 @@ public class ProceedTest {
         config.setDelayMilli(5000);
         logger.info("" +
                 new RetryBuilder().setConfig(config).build().proceed(
-                        new Retry<Integer>() {
+                        new Retryable<Integer>() {
                             @Override
                             public Integer proceed(int round, long nanos) {
                                 logger.info("success");
@@ -59,7 +59,7 @@ public class ProceedTest {
             long id = Thread.currentThread().getId();
             logger.info("" +
                     new RetryBuilder().setConfig(config).build().proceed(
-                            new Retry<Integer>() {
+                            new Retryable<Integer>() {
                                 @Override
                                 public Integer proceed(int round, long nanos) {
                                     Assert.assertEquals(id, Thread.currentThread().getId());
