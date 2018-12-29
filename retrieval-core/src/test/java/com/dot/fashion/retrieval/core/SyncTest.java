@@ -20,7 +20,7 @@ public class SyncTest {
     @Test
     public void sync() throws InterruptedException, ExecutionException, TimeoutException {
         RetryConfig config = new RetryConfig();
-        config.setNum(2);//重试2次
+        config.setRetry(2);//重试2次
         config.setDelayMilli(5000);
         config.setExecutorService(Executors.newCachedThreadPool());
         logger.info("主线程id:" + Thread.currentThread().getId());
@@ -44,7 +44,7 @@ public class SyncTest {
     @Test(timeout = 5000)
     public void syncWithTimeout() throws InterruptedException, ExecutionException {
         RetryConfig config = new RetryConfig();
-        config.setNum(2);
+        config.setRetry(2);
         config.setDelayMilli(5000);
         config.setTimeLimitMilli(3000);
         config.setExecutorService(Executors.newCachedThreadPool());

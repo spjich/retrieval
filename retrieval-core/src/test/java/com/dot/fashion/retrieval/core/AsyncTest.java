@@ -21,7 +21,7 @@ public class AsyncTest {
     public void asyncTimeLimit() throws InterruptedException {
         RetryConfig retryConfig = new RetryConfig();
         retryConfig.setExecutorService(Executors.newCachedThreadPool());
-        retryConfig.setNum(-1);
+        retryConfig.setRetry(-1);
         retryConfig.setTimeLimitMilli(2000);
         new RetryBuilder().build().async((int round, long nanos) -> {
             TimeUnit.HOURS.sleep(1);
@@ -41,7 +41,7 @@ public class AsyncTest {
         retryConfig.setExecutorService(executorService);
         //5s超时
         retryConfig.setTimeLimitMilli(5000);
-        retryConfig.setNum(-1);
+        retryConfig.setRetry(-1);
         new RetryBuilder().setConfig(retryConfig).build().async(
                 new Retry<Integer>() {
                     @Override
@@ -85,7 +85,7 @@ public class AsyncTest {
         retryConfig.setExecutorService(executorService);
         //5s超时
         retryConfig.setTimeLimitMilli(5000);
-        retryConfig.setNum(-1);
+        retryConfig.setRetry(-1);
         new RetryBuilder().setConfig(retryConfig).build().async(
                 new Retry<Integer>() {
                     @Override

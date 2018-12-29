@@ -1,6 +1,7 @@
 package com.dot.fashion.retrieval.spring.annotation;
 
-import com.dot.fashion.retrieval.core.Retry;
+import org.springframework.context.annotation.Import;
+import org.springframework.stereotype.Component;
 
 import java.lang.annotation.*;
 
@@ -13,6 +14,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
+@Import(Component.class)
 public @interface Retrieval {
 
     int retry() default 0;
@@ -23,7 +25,7 @@ public @interface Retrieval {
 
     RetryModule module() default RetryModule.PROCEED;
 
-    String pool() default "";
+    Class<? extends Exception>[] failOn() default {};
 
-    Class<? extends Retry> logic();
+    Class<? extends Exception>[] continueWhen() default {};
 }

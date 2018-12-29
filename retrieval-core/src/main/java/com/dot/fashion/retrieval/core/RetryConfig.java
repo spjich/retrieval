@@ -10,7 +10,7 @@ import java.util.concurrent.ExecutorService;
 class RetryConfig {
 
     //重试次数
-    private Integer num;
+    private Integer retry;
 
     //整个重试等待时间
     private long timeLimitMilli;
@@ -20,14 +20,18 @@ class RetryConfig {
 
     //每次重试等待时间
     private long delayMilli;
+    //失败跳出
+    private Class<? extends Exception>[] failOn;
+    //失败继续
+    private Class<? extends Exception>[] continueWhen;
 
 
-    Integer getNum() {
-        return num;
+    Integer getRetry() {
+        return retry;
     }
 
-    void setNum(Integer num) {
-        this.num = num;
+    void setRetry(Integer retry) {
+        this.retry = retry;
     }
 
     long getTimeLimitMilli() {
@@ -55,11 +59,27 @@ class RetryConfig {
         this.delayMilli = delayMilli;
     }
 
+    public Class<? extends Exception>[] getFailOn() {
+        return failOn;
+    }
+
+    public void setFailOn(Class<? extends Exception>[] failOn) {
+        this.failOn = failOn;
+    }
+
+    public Class<? extends Exception>[] getContinueWhen() {
+        return continueWhen;
+    }
+
+    public void setContinueWhen(Class<? extends Exception>[] continueWhen) {
+        this.continueWhen = continueWhen;
+    }
+
     RetryConfig() {
     }
 
     public RetryConfig(Integer num, long timeLimitMilli, ExecutorService executorService, long delayMilli) {
-        this.num = num;
+        this.retry = num;
         this.timeLimitMilli = timeLimitMilli;
         this.executorService = executorService;
         this.delayMilli = delayMilli;

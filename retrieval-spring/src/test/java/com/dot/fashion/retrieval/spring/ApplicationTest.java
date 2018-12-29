@@ -25,7 +25,7 @@ public class ApplicationTest {
 
     @Test
     public void test() {
-        System.out.println(testService.test());
+        System.out.println(testService.test(1));
     }
 
 }

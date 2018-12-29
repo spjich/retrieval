@@ -31,7 +31,7 @@ public class RetryBuilder {
      * @return
      */
     public RetryBuilder retry(int num) {
-        retryConfig.setNum(num);
+        retryConfig.setRetry(num);
         return this;
     }
 
@@ -53,7 +53,7 @@ public class RetryBuilder {
      * @return
      */
     public RetryBuilder delay(long mills) {
-        retryConfig.setTimeLimitMilli(mills);
+        retryConfig.setDelayMilli(mills);
         return this;
     }
 
@@ -66,6 +66,17 @@ public class RetryBuilder {
      */
     public RetryBuilder timeout(long millSeconds) {
         retryConfig.setTimeLimitMilli(millSeconds);
+        return this;
+    }
+
+
+    public RetryBuilder failOn(Class<? extends Exception>[] exceptions) {
+        retryConfig.setFailOn(exceptions);
+        return this;
+    }
+
+    public RetryBuilder continueWhen(Class<? extends Exception>[] exceptions) {
+        retryConfig.setContinueWhen(exceptions);
         return this;
     }
 

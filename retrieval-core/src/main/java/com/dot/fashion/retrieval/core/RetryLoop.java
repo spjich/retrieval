@@ -2,8 +2,10 @@ package com.dot.fashion.retrieval.core;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
@@ -34,7 +36,7 @@ public final class RetryLoop {
      * @return
      */
     public <T> T proceed(Retry<T> retry) {
-        return loop(retry);
+        return adapt(retry);
     }
 
     /**
@@ -95,10 +97,20 @@ public final class RetryLoop {
         }
     }
 
+
     private void stop() {
         hook.interrupt();
         state = State.STOP;
     }
+
+    private <T> T adapt(Retry<T> retry) {
+        if (retry instanceof SpringRetry) {
+            return loop((SpringRetry<T>) retry);
+        } else {
+            return loop(retry);
+        }
+    }
+
 
     /**
      * 重试循环
@@ -107,12 +119,13 @@ public final class RetryLoop {
      * @param <T>
      * @return
      */
+    @SuppressWarnings("Duplicates")
     private <T> T loop(Retry<T> retry) {
         hook = Thread.currentThread();
         state = State.RUNNING;
         startNanos = System.nanoTime();
         T t = null;
-        Integer retryNum = retryConfig.getNum();
+        Integer retryNum = retryConfig.getRetry();
         int round = 0;
         for (; state == State.RUNNING; ) {
             try {
@@ -134,13 +147,54 @@ public final class RetryLoop {
             if (retryNum >= 0 && round > retryNum) {
                 break;
             }
-            try {
-                MILLISECONDS.sleep(retryConfig.getDelayMilli());
-            } catch (InterruptedException e) {
-                break;
-            }
+            if (sleepIfInterrupt()) break;
         }
         return retry.whenFinish(t, round, diff());
+    }
+
+
+    @SuppressWarnings("Duplicates")
+    private <T> T loop(SpringRetry<T> retry) {
+        hook = Thread.currentThread();
+        state = State.RUNNING;
+        startNanos = System.nanoTime();
+        Integer retryNum = retryConfig.getRetry();
+        int round = 0;
+        Class<? extends Exception>[] failOn = retryConfig.getFailOn();
+        Class[] continueWhen = retryConfig.getContinueWhen();
+        for (; state == State.RUNNING; ) {
+            try {
+                return retry.proceed(round, diff());
+            } catch (InterruptedException in) {
+                break;
+            } catch (Exception e) {
+                if (Stream.of(failOn).anyMatch((clz) -> e.getClass() == clz)) {
+                    return null;
+                }
+                if (continueWhen.length != 0) {
+                    if (Stream.of(continueWhen).noneMatch((clz) -> e.getClass() == clz)) {
+                        return null;
+                    }
+                } else {
+                    round++;
+                    if (retryNum >= 0 && round > retryNum) {
+                        break;
+                    }
+                    if (sleepIfInterrupt()) break;
+                }
+            }
+        }
+        return null;
+    }
+
+
+    private boolean sleepIfInterrupt() {
+        try {
+            TimeUnit.MILLISECONDS.sleep(retryConfig.getDelayMilli());
+        } catch (InterruptedException e) {
+            return true;
+        }
+        return false;
     }
 
     private long diff() {

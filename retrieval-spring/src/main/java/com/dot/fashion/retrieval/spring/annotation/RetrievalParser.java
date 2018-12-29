@@ -1,6 +1,5 @@
 package com.dot.fashion.retrieval.spring.annotation;
 
-import com.dot.fashion.retrieval.core.Retry;
 import com.dot.fashion.retrieval.core.RetryBuilder;
 import com.dot.fashion.retrieval.core.RetryLoop;
 
@@ -9,15 +8,16 @@ import com.dot.fashion.retrieval.core.RetryLoop;
  * author:吉
  * since:2018/12/28
  */
-final class RetrievalParser {
+public final class RetrievalParser {
 
-    static <T> RetrievalSpringContext parse(Retrieval retrieval) throws IllegalAccessException, InstantiationException {
+    public static RetrievalSpringContext parse(Retrieval retrieval) {
         RetryLoop retryLoop = new RetryBuilder()
                 .retry(retrieval.retry())
                 .delay(retrieval.delayMilli())
+                .failOn(retrieval.failOn())
+                .continueWhen(retrieval.continueWhen())
                 .timeout(retrieval.timeLimitMilli()).build();
-        Retry<T> retry = retrieval.logic().newInstance();
-        return new RetrievalSpringContext(retrieval.module(), retryLoop, retry);
+        return new RetrievalSpringContext(retrieval.module(), retryLoop);
     }
 
 }

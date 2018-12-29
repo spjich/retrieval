@@ -21,7 +21,6 @@ public class RetrievalParserTest {
             Retrieval retrieval = method.getAnnotation(Retrieval.class);
             RetrievalSpringContext con = RetrievalParser.parse(retrieval);
             System.out.println(con.getModule());
-            System.out.println(con.getRetryLoop().proceed(con.getRetry()).getClass().getSimpleName());
         }
 //        Retry<String> retry = AnnotationTest.class.newInstance();
 //        System.out.println(new RetryBuilder().build().proceed(retry));

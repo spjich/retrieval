@@ -3,7 +3,7 @@
 ## 背景
 项目中有很多需要重试的场景，而每次都得写如下的逻辑
 ```  java
-for (int i=0;i++;i<num){
+for (int i=0;i++;i<retry){
     try{
         do(//逻辑代码);
         if(success){
@@ -39,7 +39,7 @@ new RetryBuilder().build().proceed(() -> "success");
 业务线程与重试线程不同
 异步阻塞模式,重试+超时时间设定
 ``` java
-new RetryBuilder().num(10).timeout(5000).build().sync(() -> "success");
+new RetryBuilder().retry(10).timeout(5000).build().sync(() -> "success");
 ```
 重试10次，且5s后无论成功与否都会返回结果
 
