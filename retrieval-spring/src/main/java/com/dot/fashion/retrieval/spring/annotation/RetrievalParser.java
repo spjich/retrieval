@@ -1,7 +1,7 @@
 package com.dot.fashion.retrieval.spring.annotation;
 
-import com.dot.fashion.retrieval.core.RetryBuilder;
-import com.dot.fashion.retrieval.core.RetryLoop;
+import com.dot.fashion.retrieval.core.builder.RetryBuilder;
+import com.dot.fashion.retrieval.core.CallbackRetryLoop;
 
 /**
  * title:
@@ -11,11 +11,11 @@ import com.dot.fashion.retrieval.core.RetryLoop;
 public final class RetrievalParser {
 
     public static RetrievalSpringContext parse(Retrieval retrieval) {
-        RetryLoop retryLoop = new RetryBuilder()
+        CallbackRetryLoop retryLoop = new RetryBuilder()
                 .retry(retrieval.retry())
                 .delay(retrieval.delayMilli())
                 .failOn(retrieval.failOn())
-                .continueWhen(retrieval.continueOn())
+                .continueOn(retrieval.continueOn())
                 .timeout(retrieval.timeLimitMilli()).build();
         return new RetrievalSpringContext(retrieval.module(), retryLoop);
     }

@@ -1,5 +1,7 @@
 package com.dot.fashion.retrieval.core;
 
+import com.dot.fashion.retrieval.core.api.Retry;
+import com.dot.fashion.retrieval.core.builder.RetryBuilder;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

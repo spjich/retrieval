@@ -7,7 +7,7 @@ import java.util.concurrent.ExecutorService;
  * author:吉
  * since:2018/12/19
  */
-class RetryConfig {
+public class RetryConfig {
 
     //重试次数
     private Integer retry;
@@ -30,24 +30,24 @@ class RetryConfig {
         return retry;
     }
 
-    void setRetry(Integer retry) {
+    public void setRetry(Integer retry) {
         this.retry = retry;
     }
 
-    long getTimeLimitMilli() {
+    public long getTimeLimitMilli() {
         return timeLimitMilli;
     }
 
-    void setTimeLimitMilli(long timeLimitMilli) {
+    public void setTimeLimitMilli(long timeLimitMilli) {
         this.timeLimitMilli = timeLimitMilli;
     }
 
 
-    ExecutorService getExecutorService() {
+    public ExecutorService getExecutorService() {
         return executorService;
     }
 
-    void setExecutorService(ExecutorService executorService) {
+    public void setExecutorService(ExecutorService executorService) {
         this.executorService = executorService;
     }
 

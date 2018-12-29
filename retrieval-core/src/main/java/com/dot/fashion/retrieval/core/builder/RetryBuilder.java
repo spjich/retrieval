@@ -1,4 +1,9 @@
-package com.dot.fashion.retrieval.core;
+package com.dot.fashion.retrieval.core.builder;
+
+
+import com.dot.fashion.retrieval.core.CallbackRetryLoop;
+import com.dot.fashion.retrieval.core.ConditionRetryLoop;
+import com.dot.fashion.retrieval.core.RetryConfig;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -10,8 +15,9 @@ import java.util.concurrent.Executors;
  */
 @SuppressWarnings("WeakerAccess")
 public class RetryBuilder {
+
     public static final int FOREVER = -1;
-    private RetryConfig retryConfig;
+    protected RetryConfig retryConfig;
     private static final RetryConfig Default = new RetryConfig(1, -1, Executors.newCachedThreadPool(), 0);
 
 
@@ -23,6 +29,12 @@ public class RetryBuilder {
         this.retryConfig = retryConfig;
         return this;
     }
+
+
+    public RetryConfig getRetryConfig() {
+        return retryConfig;
+    }
+
 
     /**
      * 设置重试次数
@@ -69,22 +81,23 @@ public class RetryBuilder {
         return this;
     }
 
-
     public RetryBuilder failOn(Class<? extends Exception>[] exceptions) {
         retryConfig.setFailOn(exceptions);
         return this;
     }
 
-    public RetryBuilder continueWhen(Class<? extends Exception>[] exceptions) {
+    public RetryBuilder continueOn(Class<? extends Exception>[] exceptions) {
         retryConfig.setContinueOn(exceptions);
         return this;
     }
 
-    protected RetryConfig getRetryConfig() {
-        return retryConfig;
+
+    public CallbackRetryLoop build() {
+        return new CallbackRetryLoop(retryConfig);
     }
 
-    public RetryLoop build() {
-        return new RetryLoop(retryConfig);
+    public ConditionRetryLoop buildCondition() {
+        return new ConditionRetryLoop(retryConfig);
     }
+
 }

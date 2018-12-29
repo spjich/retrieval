@@ -1,5 +1,6 @@
 package com.dot.fashion.retrieval.core;
 
+import com.dot.fashion.retrieval.core.builder.RetryBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 

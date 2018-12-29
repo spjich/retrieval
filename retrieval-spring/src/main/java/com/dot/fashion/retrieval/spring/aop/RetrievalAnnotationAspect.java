@@ -1,6 +1,6 @@
 package com.dot.fashion.retrieval.spring.aop;
 
-import com.dot.fashion.retrieval.core.SpringRetry;
+import com.dot.fashion.retrieval.core.api.ConditionRetry;
 import com.dot.fashion.retrieval.core.exception.ProceedException;
 import com.dot.fashion.retrieval.core.exception.StopException;
 import com.dot.fashion.retrieval.spring.annotation.Retrieval;
@@ -30,7 +30,7 @@ public class RetrievalAnnotationAspect {
         Method method = methodSignature.getMethod();
         Retrieval retrieval = method.getAnnotation(Retrieval.class);
         RetrievalSpringContext context = RetrievalParser.parse(retrieval);
-        SpringRetry<T> retry = new SpringRetry<>(() -> {
+        ConditionRetry<T> retry = () -> {
             try {
                 return (T) pjp.proceed();
             } catch (InterruptedException e) {
@@ -38,7 +38,8 @@ public class RetrievalAnnotationAspect {
             } catch (Throwable throwable) {
                 throw new ProceedException(throwable);
             }
-        });
+
+        };
         switch (context.getModule()) {
             case SYNC:
                 return context.getRetryLoop().sync(retry);

@@ -1,5 +1,7 @@
 package com.dot.fashion.retrieval.core;
 
+import com.dot.fashion.retrieval.core.api.Retry;
+import com.dot.fashion.retrieval.core.builder.RetryBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -17,13 +19,7 @@ public class ProceedTest {
 
     @Test
     public void simple() {
-        new RetryBuilder().build().proceed((round, nanos) -> {
-            logger.info("success");
-            return "";
-        });
-
         new RetryBuilder().retry(10).delay(1000).timeout(5000).pool(Executors.newSingleThreadExecutor()).build().async((round, nanos) -> "success");
-
     }
 
 

@@ -1,4 +1,4 @@
-package com.dot.fashion.retrieval.core;
+package com.dot.fashion.retrieval.core.api;
 
 /**
  * title:重试任务
