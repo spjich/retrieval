@@ -91,8 +91,12 @@ public abstract class RetryLoop {
                 promise.completeExceptionally(new TimeoutException("Timeout"));
             });
             retFuture.applyToEither(promise, Function.identity()).exceptionally(throwable -> {
-                stop();
-                retryable.whenTimeout();
+                if (throwable.getCause() != null && throwable.getCause() instanceof TimeoutException) {
+                    CompletableFuture.runAsync(() -> {
+                        stop();
+                        retryable.whenTimeout();
+                    }, retryConfig.getExecutorService());
+                }
                 return null;
             });
         }

@@ -116,5 +116,16 @@ public class SyncTest {
 
         });
         TimeUnit.SECONDS.sleep(1);
+
+        try {
+            new RetryBuilder().continueOn(new Class[]{ArithmeticException.class}).buildCondition().sync(
+                    (ConditionRetryable<String>) () -> {
+                        throw new RuntimeException("not in condition");
+                    }
+
+            );
+        } catch (Exception e) {
+                Assert.assertEquals(e.getCause().getCause().getMessage(),"not in condition");
+        }
     }
 }

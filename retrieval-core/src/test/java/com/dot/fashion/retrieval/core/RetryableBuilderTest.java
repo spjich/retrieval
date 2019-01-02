@@ -13,6 +13,6 @@ public class RetryableBuilderTest {
 
     @Test
     public void buildTest() {
-        Assert.assertEquals(new RetryBuilder().getRetryConfig(), new RetryBuilder().getRetryConfig());
+        Assert.assertEquals(new RetryBuilder().getRetryConfig().getExecutorService(), new RetryBuilder().getRetryConfig().getExecutorService());
     }
 }

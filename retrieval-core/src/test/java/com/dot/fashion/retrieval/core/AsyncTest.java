@@ -1,5 +1,6 @@
 package com.dot.fashion.retrieval.core;
 
+import com.dot.fashion.retrieval.core.api.ConditionRetryable;
 import com.dot.fashion.retrieval.core.api.Retryable;
 import com.dot.fashion.retrieval.core.builder.RetryBuilder;
 import org.junit.Assert;
@@ -133,5 +134,57 @@ public class AsyncTest {
 
         logger.info("主线程执行完毕");
         TimeUnit.SECONDS.sleep(10);
+    }
+
+    @Test
+    public void asyncCondition() throws InterruptedException {
+//        long invokerId = Thread.currentThread().getId();
+//        new RetryBuilder().buildCondition().async(() -> {
+//            Assert.assertNotEquals(invokerId, Thread.currentThread().getId());
+//            return "success";
+//        });
+//        new RetryBuilder().buildCondition().async(() -> {
+//            System.out.println(1 / 0);
+//            return "success";
+//        });
+//        AtomicInteger hit1 = new AtomicInteger(0);
+//        new RetryBuilder().retry(2).continueOn(new Class[]{ArithmeticException.class}).buildCondition().async(() -> {
+//            logger.info("execute");
+//            hit1.getAndIncrement();
+//            System.out.println(1 / 0);
+//            return "success";
+//        });
+//        Thread.sleep(1000);
+//        Assert.assertEquals(hit1.get(), 3);
+//        AtomicInteger hit2 = new AtomicInteger(0);
+//        new RetryBuilder().retry(2).failOn(new Class[]{ArithmeticException.class}).buildCondition().async(() -> {
+//            int hitInside = hit2.getAndIncrement();
+//            if (hitInside != 0) {
+//                Assert.fail();
+//            }
+//            System.out.println(1 / 0);
+//            return "success";
+//        });
+
+        new RetryBuilder().retry(2).timeout(3000).continueOn(new Class[]{ArithmeticException.class}).buildCondition().async(new ConditionRetryable<String>() {
+            @Override
+            public String get() {
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException e) {
+                    logger.info("interrupted");
+                    return "break";
+                }
+                System.out.println(1 / 0);
+                return "success";
+            }
+
+            @Override
+            public void whenTimeout() {
+                logger.info("timeout");
+            }
+
+        });
+        TimeUnit.SECONDS.sleep(5);
     }
 }
