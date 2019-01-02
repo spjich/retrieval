@@ -1,5 +1,6 @@
 package com.dot.fashion.retrieval.core;
 
+import com.dot.fashion.retrieval.core.api.ConditionRetryable;
 import com.dot.fashion.retrieval.core.api.Retryable;
 import com.dot.fashion.retrieval.core.builder.RetryBuilder;
 import org.junit.Assert;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -92,5 +94,26 @@ public class SyncTest {
         } catch (Exception e) {
             Assert.assertEquals(e.getCause().getCause().getClass(), ArithmeticException.class);
         }
+
+        new RetryBuilder().retry(2).timeout(3000).continueOn(new Class[]{ArithmeticException.class}).buildCondition().sync(new ConditionRetryable<String>() {
+            @Override
+            public String get() {
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException e) {
+                    logger.info("interrupted");
+                }
+                System.out.println(1 / 0);
+                return "success";
+            }
+
+            @Override
+            public void whenTimeout() {
+                Assert.assertEquals(invokerId, Thread.currentThread().getId());
+                logger.info("timeout");
+            }
+
+        });
+        TimeUnit.SECONDS.sleep(1);
     }
 }
