@@ -56,7 +56,7 @@ Class[] failOn = {IllegalAccessException.class};
 
 `timeout` 执行超时时间(proceed模式不支持) （默认：FOREVER）
 
-`pool` 自定义线程池 （默认：共用CachedThreadPool）
+`pool` 自定义线程池 （默认：全局唯一的CachedThreadPool）
 
 `timeoutPolice` 超时时所采取的停止策略。SetFlag：只设置标识位，重试线程必须跑完一次循环才会跳出。InterruptAndSetFlag：触发中断并设置标识位。（默认：InterruptAndSetFlag）
 

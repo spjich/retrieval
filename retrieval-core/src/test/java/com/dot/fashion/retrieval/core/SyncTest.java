@@ -2,6 +2,7 @@ package com.dot.fashion.retrieval.core;
 
 import com.dot.fashion.retrieval.core.api.Retryable;
 import com.dot.fashion.retrieval.core.builder.RetryBuilder;
+import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,5 +66,31 @@ public class SyncTest {
                 logger.info("执行线程id:" + Thread.currentThread().getId() + "|timeout");
             }
         }));
+    }
+
+    @Test
+    public void conditionSync() throws ExecutionException, InterruptedException {
+        long invokerId = Thread.currentThread().getId();
+        Assert.assertEquals(new RetryBuilder().buildCondition().sync(() -> {
+            Assert.assertNotEquals(invokerId, Thread.currentThread().getId());
+            return "success";
+        }), "success");
+        Assert.assertEquals(new RetryBuilder().buildCondition().sync(() -> {
+            System.out.println(1 / 0);
+            return "success";
+        }), null);
+        Assert.assertEquals(new RetryBuilder().retry(2).continueOn(new Class[]{ArithmeticException.class}).buildCondition().sync(() -> {
+            System.out.println("execute");
+            System.out.println(1 / 0);
+            return "success";
+        }), null);
+        try {
+            new RetryBuilder().retry(2).failOn(new Class[]{ArithmeticException.class}).buildCondition().sync(() -> {
+                System.out.println(1 / 0);
+                return "success";
+            });
+        } catch (Exception e) {
+            Assert.assertEquals(e.getCause().getCause().getClass(), ArithmeticException.class);
+        }
     }
 }

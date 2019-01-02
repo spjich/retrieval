@@ -1,8 +1,8 @@
 package com.dot.fashion.retrieval.core;
 
-import com.dot.fashion.retrieval.core.api.Retryable;
-import com.dot.fashion.retrieval.core.api.RetryLoop;
 import com.dot.fashion.retrieval.core.api.ConditionRetryable;
+import com.dot.fashion.retrieval.core.api.RetryLoop;
+import com.dot.fashion.retrieval.core.api.Retryable;
 import com.dot.fashion.retrieval.core.exception.ProceedException;
 import com.dot.fashion.retrieval.core.exception.StopException;
 
@@ -39,20 +39,18 @@ public final class ConditionRetryLoop extends RetryLoop {
         Integer retryNum = retryConfig.getRetry();
         int round = 0;
         Class<? extends Exception>[] failOn = retryConfig.getFailOn();
-        Class[] continueOn = retryConfig.getContinueOn();
+        Class<? extends Exception>[] continueOn = retryConfig.getContinueOn();
         for (; state == RetryLoop.State.RUNNING; ) {
             try {
                 return ((ConditionRetryable<T>) retryable).proceed(round, diff());
             } catch (StopException in) {
                 break;
             } catch (ProceedException e) {
-                if (Stream.of(failOn).anyMatch((clz) -> e.getCause().getClass() == clz)) {
-                    throw new RuntimeException(e);
+                if (failOn != null && Stream.of(failOn).anyMatch((clz) -> e.getCause().getClass() == clz)) {
+                    throw e;
                 }
-                if (continueOn.length != 0) {
-                    if (Stream.of(continueOn).noneMatch((clz) -> e.getCause().getClass() == clz)) {
-                        throw new RuntimeException(e);
-                    }
+                if (continueOn != null && Stream.of(continueOn).noneMatch((clz) -> e.getCause().getClass() == clz)) {
+                    throw e;
                 }
                 round++;
                 if (retryNum >= 0 && round > retryNum) {

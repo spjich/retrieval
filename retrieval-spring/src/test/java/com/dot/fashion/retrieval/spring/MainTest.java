@@ -36,7 +36,7 @@ public class MainTest implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(com.dot.fashion.retrieval.spring.ApplicationTest.class);
+        SpringApplication.run(com.dot.fashion.retrieval.spring.MainTest.class);
     }
 
 }

@@ -15,7 +15,10 @@ public interface ConditionRetryable<T> extends Retryable<T>, Supplier<T> {
 
     @Override
     default T proceed(int round, long nanos) throws ProceedException, StopException {
-        return get();
+        try {
+            return get();
+        } catch (Throwable throwable) {
+            throw new ProceedException(throwable);
+        }
     }
-
 }
