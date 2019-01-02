@@ -22,50 +22,45 @@ for (int i=0;i++;i<retry){
 
 本组件希望提供一个统一的方案来解决这个简单但给我们代码带来不便的问题。
 
-## 基本用法
+## 快速入门
 
-### proceed模式
+> 最简单用法
 
-业务线程与重试线程相同
-单线程运行，并且尝试2次（注：proceed模式下不支持timeout设置）
+`new RetryBuilder().build().proceed((round, nanos) -> "success");`
 
+> 外加参数控制
 
 ``` java
-new RetryBuilder().build().proceed(() -> "success");
+ new RetryBuilder().retry(10).delay(1000).timeout(5000).pool(Executors.newSingleThreadExecutor()).build().async((round, nanos) -> "success");
 ```
 
-### sync模式
-
-业务线程与重试线程不同
-异步阻塞模式,重试+超时时间设定
+> 无回调形式
 ``` java
-new RetryBuilder().retry(10).timeout(5000).build().sync(() -> "success");
+Class[] failOn = {IllegalAccessException.class};
+        Class[] continueOn = {IllegalArgumentException.class};
+        new RetryBuilder()
+                .failOn(failOn)
+                .continueOn(continueOn)
+                .buildCondition()
+                .proceed(() -> "success");
 ```
-重试10次，且5s后无论成功与否都会返回结果
 
 
-### async模式
+## RetryBuilder 设置参数说明
 
-业务线程与重试线程不同
-异步非阻塞模式，重试+超时时间设定+自定义线程池
-``` java
-new RetryBuilder().retry(10).delay(1000).timeout(5000).pool(Executors.newSingleThreadExecutor()).build().async((round, nanos) -> "success");
-```
-调用线程非阻塞，重试会在线程池中继续运行，到达超时时间后自动停止
+> 设置
 
-## 核心参数解释
+`retry` 即重试次数（默认：1）
 
-retry: 即重试次数
+`delay` 每次重试间隔 （默认：0）
 
-delay: 每次重试间隔
+`timeout` 执行超时时间(proceed模式不支持) （默认：FOREVER）
 
-timeout：执行超时时间(proceed模式不支持)
+`pool` 自定义线程池 （默认：共用CachedThreadPool）
 
-pool：自定义线程池
+`timeoutPolice` 超时时所采取的停止策略。SetFlag：只设置标识位，重试线程必须跑完一次循环才会跳出。InterruptAndSetFlag：触发中断并设置标识位。（默认：InterruptAndSetFlag）
 
-
-
-## 回调支持
+> 回调（callback形式下生效）
 
 `whenError` 重试体抛异常时回调，并返回是否需要跳出循环
 
@@ -77,15 +72,29 @@ pool：自定义线程池
 
 `whenTimeout` 重试超时时回调，此时不会再回调`whenFinish`
 
+> 条件（condition形式下生效）
+
+`failOn` 循环失败条件
+
+`continueOn` 循环继续条件
+
+
+## [二种形式](doc/两种形式.md)
+
+
+
+## [三种执行模式](doc/三种执行模式.md)
+ 
+
+
+ 
+## [与spring整合](doc/与spring整合.md)
+
+
+
+
 ## 后期版本计划
 
 - 整合spring，注解化运行（开发中）
 - 区分service进行熔断降级（计划中）
-- 接入apollo，disconf，支持动态修改重试配置（待）
 - 支持dashboard，显示重试失败情况（待）
-- 支持脚本化，重试逻辑热加载（待）
-
-
-
-
-

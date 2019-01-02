@@ -22,7 +22,9 @@ public class TestServiceImpl implements TestService {
     @Retrieval(retry = 3,
             delayMilli = 1000,
             module = RetryModule.ASYNC,
-            timeLimitMilli = 15000)
+            timeLimitMilli = 15000,
+            failOn = IllegalArgumentException.class,
+            continueOn = IllegalAccessException.class)
     public List<String> test(int a) {
         logger.info("执行test");
         if (a == 1) {

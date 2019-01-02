@@ -90,8 +90,8 @@ public class RetryConfig {
     RetryConfig() {
     }
 
-    public RetryConfig(Integer num, long timeLimitMilli, ExecutorService executorService, long delayMilli, RetryBuilder.TimeoutPolice timeoutPolice) {
-        this.retry = num;
+    public RetryConfig(Integer retry, long timeLimitMilli, ExecutorService executorService, long delayMilli, RetryBuilder.TimeoutPolice timeoutPolice) {
+        this.retry = retry;
         this.timeLimitMilli = timeLimitMilli;
         this.executorService = executorService;
         this.delayMilli = delayMilli;

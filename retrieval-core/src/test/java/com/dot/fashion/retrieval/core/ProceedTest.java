@@ -20,6 +20,14 @@ public class ProceedTest {
     @Test
     public void simple() {
         new RetryBuilder().retry(10).delay(1000).timeout(5000).pool(Executors.newSingleThreadExecutor()).build().async((round, nanos) -> "success");
+        new RetryBuilder().build().proceed((round, nanos) -> "success");
+        Class[] failOn = {IllegalAccessException.class};
+        Class[] continueOn = {IllegalArgumentException.class};
+        new RetryBuilder()
+                .failOn(failOn)
+                .continueOn(continueOn)
+                .buildCondition()
+                .proceed(() -> "success");
     }
 
 
