@@ -116,7 +116,7 @@ for (int i=0;i++;i<retry){
 
 
 
-## [三种执行模式 proceed|sync|async](doc/三种执行模式.md)
+## [三种执行模式 proceed|sync|async](doc/三种模式.md)
  
 
 
