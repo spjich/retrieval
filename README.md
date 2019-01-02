@@ -34,6 +34,36 @@ for (int i=0;i++;i<retry){
  new RetryBuilder().retry(10).delay(1000).timeout(5000).pool(Executors.newSingleThreadExecutor()).build().async((round, nanos) -> "success");
 ```
 
+> 回调形式
+
+``` java
+  new RetryBuilder().setConfig(config).build().proceed(
+                        new Retryable<Integer>() {
+                            @Override
+                            public Integer proceed(int round, long nanos) {
+                                logger.info("success");
+                                return 1;
+                            }
+
+                            @Override
+                            public Integer whenFinish(Integer ret, int round, long nanos) {
+                                logger.info("finish");
+                                return 999;
+                            }
+
+                            @Override
+                            public boolean postCondition(Integer ret, int round, long nanos) {
+                                logger.info(round + "");
+                                return true;
+                            }
+
+                            @Override
+                            public boolean preCondition(int round, long nanos) {
+                                return true;
+                            }
+                        }));
+```
+
 > 无回调形式
 ``` java
         Class[] failOn = {IllegalAccessException.class};
@@ -82,11 +112,11 @@ for (int i=0;i++;i<retry){
 `continueOn` 循环继续条件
 
 
-## [二种形式](doc/两种形式.md)
+## [二种形式 callback|condition](doc/两种形式.md)
 
 
 
-## [三种执行模式](doc/三种执行模式.md)
+## [三种执行模式 proceed|sync|async](doc/三种执行模式.md)
  
 
 

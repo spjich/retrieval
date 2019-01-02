@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * title:
@@ -138,33 +139,33 @@ public class AsyncTest {
 
     @Test
     public void asyncCondition() throws InterruptedException {
-//        long invokerId = Thread.currentThread().getId();
-//        new RetryBuilder().buildCondition().async(() -> {
-//            Assert.assertNotEquals(invokerId, Thread.currentThread().getId());
-//            return "success";
-//        });
-//        new RetryBuilder().buildCondition().async(() -> {
-//            System.out.println(1 / 0);
-//            return "success";
-//        });
-//        AtomicInteger hit1 = new AtomicInteger(0);
-//        new RetryBuilder().retry(2).continueOn(new Class[]{ArithmeticException.class}).buildCondition().async(() -> {
-//            logger.info("execute");
-//            hit1.getAndIncrement();
-//            System.out.println(1 / 0);
-//            return "success";
-//        });
-//        Thread.sleep(1000);
-//        Assert.assertEquals(hit1.get(), 3);
-//        AtomicInteger hit2 = new AtomicInteger(0);
-//        new RetryBuilder().retry(2).failOn(new Class[]{ArithmeticException.class}).buildCondition().async(() -> {
-//            int hitInside = hit2.getAndIncrement();
-//            if (hitInside != 0) {
-//                Assert.fail();
-//            }
-//            System.out.println(1 / 0);
-//            return "success";
-//        });
+        long invokerId = Thread.currentThread().getId();
+        new RetryBuilder().withCondition().build().async(() -> {
+            Assert.assertNotEquals(invokerId, Thread.currentThread().getId());
+            return "success";
+        });
+        new RetryBuilder().withCondition().build().async(() -> {
+            System.out.println(1 / 0);
+            return "success";
+        });
+        AtomicInteger hit1 = new AtomicInteger(0);
+        new RetryBuilder().retry(2).withCondition().continueOn(new Class[]{ArithmeticException.class}).build().async(() -> {
+            logger.info("execute");
+            hit1.getAndIncrement();
+            System.out.println(1 / 0);
+            return "success";
+        });
+        Thread.sleep(1000);
+        Assert.assertEquals(hit1.get(), 3);
+        AtomicInteger hit2 = new AtomicInteger(0);
+        new RetryBuilder().retry(2).withCondition().failOn(new Class[]{ArithmeticException.class}).build().async(() -> {
+            int hitInside = hit2.getAndIncrement();
+            if (hitInside != 0) {
+                Assert.fail();
+            }
+            System.out.println(1 / 0);
+            return "success";
+        });
 
         new RetryBuilder().retry(2).timeout(3000).withCondition().continueOn(new Class[]{ArithmeticException.class}).build().async(new ConditionRetryable<String>() {
             @Override

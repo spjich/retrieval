@@ -55,7 +55,12 @@ public class ProceedTest {
                             @Override
                             public boolean postCondition(Integer ret, int round, long nanos) {
                                 logger.info(round + "");
-                                return false;
+                                return true;
+                            }
+
+                            @Override
+                            public boolean preCondition(int round, long nanos) {
+                                return true;
                             }
                         }));
     }

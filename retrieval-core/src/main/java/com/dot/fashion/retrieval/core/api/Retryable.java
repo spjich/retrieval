@@ -36,7 +36,7 @@ public interface Retryable<T> {
      * 循环后置条件
      *
      * @param ret proceed执行结果
-     * @return 是否需要继续重试
+     * @return 是否  继续执行
      */
     default boolean postCondition(T ret, int round, long nanos) {
         return true;
@@ -47,7 +47,7 @@ public interface Retryable<T> {
      * 循环前置条件
      *
      * @param round 重试次数
-     * @return 是否可执行
+     * @return 是否  继续执行
      */
     default boolean preCondition(int round, long nanos) {
         return true;
