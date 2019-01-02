@@ -13,8 +13,6 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Method;
-
 @Aspect
 @Component
 @SuppressWarnings("unchecked")
@@ -27,8 +25,11 @@ public class RetrievalAnnotationAspect {
     @Around("pointCut()")
     public <T> T method(ProceedingJoinPoint pjp) throws Throwable {
         MethodSignature methodSignature = (MethodSignature) pjp.getSignature();
-        Method method = methodSignature.getMethod();
-        Retrieval retrieval = method.getAnnotation(Retrieval.class);
+        Retrieval retrieval = pjp.getTarget()
+                .getClass()
+                .getMethod(methodSignature.getName(),
+                        methodSignature.getParameterTypes())
+                .getAnnotation(Retrieval.class);
         RetrievalSpringContext context = RetrievalParser.parse(retrieval);
         ConditionRetryable<T> retry = () -> {
             try {

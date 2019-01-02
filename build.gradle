@@ -23,6 +23,11 @@ subprojects {
         }
     }
 
+    task sourceJar(type: Jar) {
+        from sourceSets.main.allJava
+        from sourceSets.main.resources
+        classifier "sources"
+    }
     // 上传jar和源码
     publishing {
         publications {
@@ -30,6 +35,7 @@ subprojects {
                 from components.java    //发布java组件
                 groupId "$project.group"
                 artifactId "$project.name"
+                artifact sourceJar
                 version "$project.version"
             }
         }
