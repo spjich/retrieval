@@ -99,8 +99,15 @@ public abstract class RetryLoop {
     }
 
     private void stop() {
-        hook.interrupt();
-        state = CallbackRetryLoop.State.STOP;
+        switch (retryConfig.getTimeoutPolice()) {
+            case SetFlag:
+                state = CallbackRetryLoop.State.STOP;
+                break;
+            case InterruptAndSetFlag:
+                hook.interrupt();
+                state = CallbackRetryLoop.State.STOP;
+                break;
+        }
     }
 
     protected long diff() {

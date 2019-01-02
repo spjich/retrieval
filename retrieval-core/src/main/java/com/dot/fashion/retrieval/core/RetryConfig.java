@@ -1,5 +1,7 @@
 package com.dot.fashion.retrieval.core;
 
+import com.dot.fashion.retrieval.core.builder.RetryBuilder;
+
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -24,6 +26,8 @@ public class RetryConfig {
     private Class<? extends Exception>[] failOn;
     //失败继续
     private Class<? extends Exception>[] continueOn;
+
+    private RetryBuilder.TimeoutPolice timeoutPolice;
 
 
     Integer getRetry() {
@@ -75,13 +79,22 @@ public class RetryConfig {
         this.continueOn = continueOn;
     }
 
+    public RetryBuilder.TimeoutPolice getTimeoutPolice() {
+        return timeoutPolice;
+    }
+
+    public void setTimeoutPolice(RetryBuilder.TimeoutPolice timeoutPolice) {
+        this.timeoutPolice = timeoutPolice;
+    }
+
     RetryConfig() {
     }
 
-    public RetryConfig(Integer num, long timeLimitMilli, ExecutorService executorService, long delayMilli) {
+    public RetryConfig(Integer num, long timeLimitMilli, ExecutorService executorService, long delayMilli, RetryBuilder.TimeoutPolice timeoutPolice) {
         this.retry = num;
         this.timeLimitMilli = timeLimitMilli;
         this.executorService = executorService;
         this.delayMilli = delayMilli;
+        this.timeoutPolice = timeoutPolice;
     }
 }

@@ -18,7 +18,11 @@ public class RetryBuilder {
 
     public static final int FOREVER = -1;
     protected RetryConfig retryConfig;
-    private static final RetryConfig Default = new RetryConfig(1, -1, Executors.newCachedThreadPool(), 0);
+    private static final RetryConfig Default = new RetryConfig(1,
+            -1,
+            Executors.newCachedThreadPool(),
+            0,
+            TimeoutPolice.InterruptAndSetFlag);
 
 
     public RetryBuilder() {
@@ -91,6 +95,10 @@ public class RetryBuilder {
         return this;
     }
 
+    public RetryBuilder timeoutPolice(TimeoutPolice timeoutPolice) {
+        retryConfig.setTimeoutPolice(timeoutPolice);
+        return this;
+    }
 
     public CallbackRetryLoop build() {
         return new CallbackRetryLoop(retryConfig);
@@ -98,6 +106,13 @@ public class RetryBuilder {
 
     public ConditionRetryLoop buildCondition() {
         return new ConditionRetryLoop(retryConfig);
+    }
+
+    public enum TimeoutPolice {
+        //超时中断(默认)
+        InterruptAndSetFlag,
+        //超时
+        SetFlag
     }
 
 }
