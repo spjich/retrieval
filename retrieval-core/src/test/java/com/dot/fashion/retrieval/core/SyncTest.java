@@ -102,6 +102,7 @@ public class SyncTest {
                     TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException e) {
                     logger.info("interrupted");
+                    return "break";
                 }
                 System.out.println(1 / 0);
                 return "success";

@@ -93,5 +93,31 @@ public class ProceedTest {
         Thread.sleep(5000L);
     }
 
+    @Test
+    public void conditionProceed() {
+        long invokerId = Thread.currentThread().getId();
+        Assert.assertEquals(new RetryBuilder().buildCondition().proceed(() -> {
+            Assert.assertEquals(invokerId, Thread.currentThread().getId());
+            return "success";
+        }), "success");
+        Assert.assertEquals(new RetryBuilder().buildCondition().proceed(() -> {
+            System.out.println(1 / 0);
+            return "success";
+        }), null);
+        Assert.assertEquals(new RetryBuilder().retry(2).continueOn(new Class[]{ArithmeticException.class}).buildCondition().proceed(() -> {
+            System.out.println("execute");
+            System.out.println(1 / 0);
+            return "success";
+        }), null);
+        try {
+            new RetryBuilder().retry(2).failOn(new Class[]{ArithmeticException.class}).buildCondition().proceed(() -> {
+                System.out.println(1 / 0);
+                return "success";
+            });
+        } catch (Exception e) {
+            Assert.assertEquals(e.getCause().getClass(), ArithmeticException.class);
+        }
+    }
+
 
 }

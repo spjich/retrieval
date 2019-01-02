@@ -18,15 +18,15 @@ public class RetryBuilder {
 
     public static final int FOREVER = -1;
     protected RetryConfig retryConfig;
-    private static final RetryConfig Default = new RetryConfig(1,
-            -1,
-            Executors.newCachedThreadPool(),
-            0,
-            TimeoutPolice.InterruptAndSetFlag);
+    private static final ExecutorService Default_Pool = Executors.newCachedThreadPool();
 
 
     public RetryBuilder() {
-        this.retryConfig = Default;
+        this.retryConfig = new RetryConfig(1,
+                -1,
+                Default_Pool,
+                0,
+                TimeoutPolice.InterruptAndSetFlag);
     }
 
     public RetryBuilder setConfig(RetryConfig retryConfig) {
