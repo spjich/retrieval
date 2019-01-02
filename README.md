@@ -36,12 +36,13 @@ for (int i=0;i++;i<retry){
 
 > 无回调形式
 ``` java
-Class[] failOn = {IllegalAccessException.class};
+        Class[] failOn = {IllegalAccessException.class};
         Class[] continueOn = {IllegalArgumentException.class};
         new RetryBuilder()
+                .withCondition()
                 .failOn(failOn)
                 .continueOn(continueOn)
-                .buildCondition()
+                .build()
                 .proceed(() -> "success");
 ```
 
@@ -73,6 +74,8 @@ Class[] failOn = {IllegalAccessException.class};
 `whenTimeout` 重试超时时回调，此时不会再回调`whenFinish`
 
 > 条件（condition形式下生效）
+
+`withCondition` 进入condition形式
 
 `failOn` 循环失败条件
 

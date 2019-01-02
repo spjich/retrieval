@@ -166,7 +166,7 @@ public class AsyncTest {
 //            return "success";
 //        });
 
-        new RetryBuilder().retry(2).timeout(3000).continueOn(new Class[]{ArithmeticException.class}).buildCondition().async(new ConditionRetryable<String>() {
+        new RetryBuilder().retry(2).timeout(3000).withCondition().continueOn(new Class[]{ArithmeticException.class}).build().async(new ConditionRetryable<String>() {
             @Override
             public String get() {
                 try {

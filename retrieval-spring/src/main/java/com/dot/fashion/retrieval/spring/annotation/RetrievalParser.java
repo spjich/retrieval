@@ -2,7 +2,6 @@ package com.dot.fashion.retrieval.spring.annotation;
 
 import com.dot.fashion.retrieval.core.ConditionRetryLoop;
 import com.dot.fashion.retrieval.core.builder.RetryBuilder;
-import com.dot.fashion.retrieval.core.CallbackRetryLoop;
 
 /**
  * title:
@@ -15,9 +14,11 @@ public final class RetrievalParser {
         ConditionRetryLoop retryLoop = new RetryBuilder()
                 .retry(retrieval.retry())
                 .delay(retrieval.delayMilli())
+                .timeout(retrieval.timeLimitMilli())
+                .withCondition()
                 .failOn(retrieval.failOn())
                 .continueOn(retrieval.continueOn())
-                .timeout(retrieval.timeLimitMilli()).buildCondition();
+                .build();
         return new RetrievalSpringContext(retrieval.module(), retryLoop);
     }
 

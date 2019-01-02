@@ -85,15 +85,6 @@ public class RetryBuilder {
         return this;
     }
 
-    public RetryBuilder failOn(Class<? extends Exception>[] exceptions) {
-        retryConfig.setFailOn(exceptions);
-        return this;
-    }
-
-    public RetryBuilder continueOn(Class<? extends Exception>[] exceptions) {
-        retryConfig.setContinueOn(exceptions);
-        return this;
-    }
 
     public RetryBuilder timeoutPolice(TimeoutPolice timeoutPolice) {
         retryConfig.setTimeoutPolice(timeoutPolice);
@@ -104,15 +95,33 @@ public class RetryBuilder {
         return new CallbackRetryLoop(retryConfig);
     }
 
-    public ConditionRetryLoop buildCondition() {
-        return new ConditionRetryLoop(retryConfig);
+    public ConditionBuilder withCondition() {
+        return new ConditionBuilder();
     }
+
 
     public enum TimeoutPolice {
         //超时中断(默认)
         InterruptAndSetFlag,
         //超时
         SetFlag
+    }
+
+    public class ConditionBuilder {
+
+        public ConditionBuilder failOn(Class<? extends Exception>[] exceptions) {
+            retryConfig.setFailOn(exceptions);
+            return this;
+        }
+
+        public ConditionBuilder continueOn(Class<? extends Exception>[] exceptions) {
+            retryConfig.setContinueOn(exceptions);
+            return this;
+        }
+
+        public ConditionRetryLoop build() {
+            return new ConditionRetryLoop(retryConfig);
+        }
     }
 
 }

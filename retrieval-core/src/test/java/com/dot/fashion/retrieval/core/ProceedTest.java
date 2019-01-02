@@ -24,9 +24,10 @@ public class ProceedTest {
         Class[] failOn = {IllegalAccessException.class};
         Class[] continueOn = {IllegalArgumentException.class};
         new RetryBuilder()
+                .withCondition()
                 .failOn(failOn)
                 .continueOn(continueOn)
-                .buildCondition()
+                .build()
                 .proceed(() -> "success");
     }
 
@@ -104,7 +105,7 @@ public class ProceedTest {
 //            System.out.println(1 / 0);
 //            return "success";
 //        }), null);
-        Assert.assertEquals(new RetryBuilder().retry(2).continueOn(new Class[]{ArithmeticException.class}).buildCondition().proceed(() -> {
+        Assert.assertEquals(new RetryBuilder().retry(2).withCondition().continueOn(new Class[]{ArithmeticException.class}).build().proceed(() -> {
             System.out.println("execute");
             System.out.println(1 / 0);
             return "success";

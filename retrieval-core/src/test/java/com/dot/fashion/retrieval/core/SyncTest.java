@@ -73,21 +73,21 @@ public class SyncTest {
     @Test
     public void conditionSync() throws ExecutionException, InterruptedException {
         long invokerId = Thread.currentThread().getId();
-        Assert.assertEquals(new RetryBuilder().buildCondition().sync(() -> {
+        Assert.assertEquals(new RetryBuilder().withCondition().build().sync(() -> {
             Assert.assertNotEquals(invokerId, Thread.currentThread().getId());
             return "success";
         }), "success");
-        Assert.assertEquals(new RetryBuilder().buildCondition().sync(() -> {
+        Assert.assertEquals(new RetryBuilder().withCondition().build().sync(() -> {
             System.out.println(1 / 0);
             return "success";
         }), null);
-        Assert.assertEquals(new RetryBuilder().retry(2).continueOn(new Class[]{ArithmeticException.class}).buildCondition().sync(() -> {
+        Assert.assertEquals(new RetryBuilder().retry(2).withCondition().continueOn(new Class[]{ArithmeticException.class}).build().sync(() -> {
             System.out.println("execute");
             System.out.println(1 / 0);
             return "success";
         }), null);
         try {
-            new RetryBuilder().retry(2).failOn(new Class[]{ArithmeticException.class}).buildCondition().sync(() -> {
+            new RetryBuilder().retry(2).withCondition().failOn(new Class[]{ArithmeticException.class}).build().sync(() -> {
                 System.out.println(1 / 0);
                 return "success";
             });
@@ -95,7 +95,7 @@ public class SyncTest {
             Assert.assertEquals(e.getCause().getCause().getClass(), ArithmeticException.class);
         }
 
-        new RetryBuilder().retry(2).timeout(3000).continueOn(new Class[]{ArithmeticException.class}).buildCondition().sync(new ConditionRetryable<String>() {
+        new RetryBuilder().retry(2).timeout(3000).withCondition().continueOn(new Class[]{ArithmeticException.class}).build().sync(new ConditionRetryable<String>() {
             @Override
             public String get() {
                 try {
@@ -118,14 +118,14 @@ public class SyncTest {
         TimeUnit.SECONDS.sleep(1);
 
         try {
-            new RetryBuilder().continueOn(new Class[]{ArithmeticException.class}).buildCondition().sync(
+            new RetryBuilder().withCondition().continueOn(new Class[]{ArithmeticException.class}).build().sync(
                     (ConditionRetryable<String>) () -> {
                         throw new RuntimeException("not in condition");
                     }
 
             );
         } catch (Exception e) {
-                Assert.assertEquals(e.getCause().getCause().getMessage(),"not in condition");
+            Assert.assertEquals(e.getCause().getCause().getMessage(), "not in condition");
         }
     }
 }
