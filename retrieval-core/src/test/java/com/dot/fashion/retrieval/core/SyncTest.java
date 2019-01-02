@@ -50,6 +50,7 @@ public class SyncTest {
         config.setDelayMilli(5000);
         config.setTimeLimitMilli(3000);
         config.setExecutorService(Executors.newCachedThreadPool());
+        config.setTimeoutPolice(RetryBuilder.TimeoutPolice.InterruptAndSetFlag);
         logger.info("主线程id:" + Thread.currentThread().getId());
         logger.info("返回结果" + new RetryBuilder().setConfig(config).build().sync(new Retryable<String>() {
             @Override
