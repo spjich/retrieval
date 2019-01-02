@@ -49,7 +49,10 @@ public final class ConditionRetryLoop extends RetryLoop {
                 if (failOn != null && Stream.of(failOn).anyMatch((clz) -> e.getCause().getClass() == clz)) {
                     throw e;
                 }
-                if (continueOn != null && Stream.of(continueOn).noneMatch((clz) -> e.getCause().getClass() == clz)) {
+                if (continueOn != null
+                        && continueOn.length > 0
+                        && Stream.of(continueOn)
+                        .noneMatch((clz) -> e.getCause().getClass() == clz)) {
                     throw e;
                 }
                 round++;
