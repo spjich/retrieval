@@ -1,5 +1,9 @@
 #与spring整合
 
+> 确保扫描到`com.dot.fashion.retrieval.spring.aop`路径
+
+### 使用方式
+
 ``` java
 @Retrieval(retry = 3,
             delayMilli = 1000,
