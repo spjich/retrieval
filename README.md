@@ -95,6 +95,6 @@ Class[] failOn = {IllegalAccessException.class};
 
 ## 后期版本计划
 
-- 整合spring，注解化运行（开发中）
+- 整合spring，注解化运行（已完成）
 - 区分service进行熔断降级（计划中）
 - 支持dashboard，显示重试失败情况（待）
