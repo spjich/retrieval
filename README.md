@@ -42,31 +42,31 @@ for (int i=0;i++;i<retry){
 > 回调形式
 
 ``` java
-  new RetryBuilder().setConfig(config).build().proceed(
-                        new Retryable<Integer>() {
-                            @Override
-                            public Integer proceed(int round, long nanos) {
-                                logger.info("success");
-                                return 1;
-                            }
+ new RetryBuilder().build().proceed(
+         new Retryable<Integer>() {
+             @Override
+             public Integer proceed(int round, long nanos) {
+                 logger.info("success");
+                 return 1;
+             }
 
-                            @Override
-                            public Integer whenFinish(Integer ret, int round, long nanos) {
-                                logger.info("finish");
-                                return 999;
-                            }
+             @Override
+             public Integer whenFinish(Integer ret, int round, long nanos) {
+                 logger.info("finish");
+                 return 999;
+             }
 
-                            @Override
-                            public boolean postCondition(Integer ret, int round, long nanos) {
-                                logger.info(round + "");
-                                return true;
-                            }
+             @Override
+             public boolean postCondition(Integer ret, int round, long nanos) {
+                 logger.info(round + "");
+                 return true;
+             }
 
-                            @Override
-                            public boolean preCondition(int round, long nanos) {
-                                return true;
-                            }
-                        }));
+             @Override
+             public boolean preCondition(int round, long nanos) {
+                 return true;
+             }
+         }));
 ```
 
 > 无回调形式
