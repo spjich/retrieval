@@ -1,8 +1,6 @@
 package com.dot.fashion.retrieval.spring.aop;
 
 import com.dot.fashion.retrieval.core.api.ConditionRetryable;
-import com.dot.fashion.retrieval.core.exception.ProceedException;
-import com.dot.fashion.retrieval.core.exception.StopException;
 import com.dot.fashion.retrieval.spring.annotation.Retrieval;
 import com.dot.fashion.retrieval.spring.annotation.RetrievalParser;
 import com.dot.fashion.retrieval.spring.annotation.RetrievalSpringContext;
@@ -31,16 +29,7 @@ public class RetrievalAnnotationAspect {
                         methodSignature.getParameterTypes())
                 .getAnnotation(Retrieval.class);
         RetrievalSpringContext context = RetrievalParser.parse(retrieval);
-        ConditionRetryable<T> retry = () -> {
-            try {
-                return (T) pjp.proceed();
-            } catch (InterruptedException e) {
-                throw new StopException(e);
-            } catch (Throwable throwable) {
-                throw new ProceedException(throwable);
-            }
-
-        };
+        ConditionRetryable<T> retry = () -> (T) pjp.proceed();
         switch (context.getModule()) {
             case SYNC:
                 return context.getRetryLoop().sync(retry);

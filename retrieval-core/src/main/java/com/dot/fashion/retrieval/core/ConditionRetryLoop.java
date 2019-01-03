@@ -4,9 +4,9 @@ import com.dot.fashion.retrieval.core.api.ConditionRetryable;
 import com.dot.fashion.retrieval.core.api.RetryLoop;
 import com.dot.fashion.retrieval.core.api.Retryable;
 import com.dot.fashion.retrieval.core.exception.ProceedException;
-import com.dot.fashion.retrieval.core.exception.StopException;
 
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Stream;
 
 /**
@@ -23,7 +23,7 @@ public final class ConditionRetryLoop extends RetryLoop {
         return super.proceed(retry);
     }
 
-    public <T> T sync(ConditionRetryable<T> retry) throws InterruptedException, ExecutionException {
+    public <T> T sync(ConditionRetryable<T> retry) throws InterruptedException, ExecutionException, TimeoutException {
         return super.sync(retry);
     }
 
@@ -43,9 +43,10 @@ public final class ConditionRetryLoop extends RetryLoop {
         for (; state == RetryLoop.State.RUNNING; ) {
             try {
                 return ((ConditionRetryable<T>) retryable).proceed(round, diff());
-            } catch (StopException in) {
-                break;
             } catch (ProceedException e) {
+                if (e.getCause().getClass() == InterruptedException.class) {
+                    throw e;
+                }
                 if (failOn != null && Stream.of(failOn).anyMatch((clz) -> e.getCause().getClass() == clz)) {
                     throw e;
                 }

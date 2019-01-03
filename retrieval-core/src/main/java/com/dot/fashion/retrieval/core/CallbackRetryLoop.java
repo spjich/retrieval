@@ -1,9 +1,11 @@
 package com.dot.fashion.retrieval.core;
 
-import com.dot.fashion.retrieval.core.api.Retryable;
 import com.dot.fashion.retrieval.core.api.RetryLoop;
+import com.dot.fashion.retrieval.core.api.Retryable;
+import com.dot.fashion.retrieval.core.exception.ProceedException;
 
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 /**
  * title:重复循环
@@ -22,7 +24,7 @@ public final class CallbackRetryLoop extends RetryLoop {
         return super.proceed(retryable);
     }
 
-    public <T> T sync(Retryable<T> retryable) throws InterruptedException, ExecutionException {
+    public <T> T sync(Retryable<T> retryable) throws InterruptedException, ExecutionException, TimeoutException {
         return super.sync(retryable);
     }
 
@@ -51,7 +53,7 @@ public final class CallbackRetryLoop extends RetryLoop {
                 }
                 t = retryable.proceed(round, diff());
             } catch (InterruptedException in) {
-                break;
+                throw new ProceedException(in);
             } catch (Exception e) {
                 if (retryable.whenError(e, round, diff())) {
                     break;

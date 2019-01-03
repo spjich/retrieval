@@ -2,6 +2,7 @@ package com.dot.fashion.retrieval.core.api;
 
 import com.dot.fashion.retrieval.core.CallbackRetryLoop;
 import com.dot.fashion.retrieval.core.RetryConfig;
+import com.dot.fashion.retrieval.core.exception.ProceedException;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -51,7 +52,7 @@ public abstract class RetryLoop {
      * @throws InterruptedException
      * @throws ExecutionException
      */
-    protected <T> T sync(Retryable<T> retryable) throws InterruptedException, ExecutionException {
+    protected <T> T sync(Retryable<T> retryable) throws InterruptedException, ExecutionException, TimeoutException {
         CompletableFuture<T> completableFuture = CompletableFuture
                 .supplyAsync(() -> loop(retryable), retryConfig.getExecutorService());
         long timeLimit = retryConfig.getTimeLimitMilli();
@@ -62,7 +63,7 @@ public abstract class RetryLoop {
                 //停止任务
                 stop();
                 retryable.whenTimeout();
-                return null;
+                throw e;
             }
         } else {
             return completableFuture.get();
@@ -126,7 +127,7 @@ public abstract class RetryLoop {
         try {
             TimeUnit.MILLISECONDS.sleep(retryConfig.getDelayMilli());
         } catch (InterruptedException e) {
-            return true;
+            throw new ProceedException(e);
         }
         return false;
     }

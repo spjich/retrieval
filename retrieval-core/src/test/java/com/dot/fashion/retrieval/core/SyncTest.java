@@ -46,8 +46,8 @@ public class SyncTest {
         ));
     }
 
-    @Test(timeout = 5000)
-    public void syncWithTimeout() throws InterruptedException, ExecutionException {
+    @Test(expected = TimeoutException.class)
+    public void syncWithTimeout() throws InterruptedException, ExecutionException, TimeoutException {
         RetryConfig config = new RetryConfig();
         config.setRetry(2);
         config.setDelayMilli(5000);
@@ -71,7 +71,7 @@ public class SyncTest {
     }
 
     @Test
-    public void conditionSync() throws ExecutionException, InterruptedException {
+    public void conditionSync() throws ExecutionException, InterruptedException, TimeoutException {
         long invokerId = Thread.currentThread().getId();
         Assert.assertEquals(new RetryBuilder().withCondition().build().sync(() -> {
             Assert.assertNotEquals(invokerId, Thread.currentThread().getId());
