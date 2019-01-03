@@ -21,7 +21,7 @@ public class TestServiceImpl implements TestService {
 
     @Retrieval(retry = 3,
             delayMilli = 1000,
-            module = RetryModule.ASYNC,
+            module = RetryModule.SYNC,
             timeLimitMilli = 15000,
             failOn = IllegalArgumentException.class,
             continueOn = IllegalAccessException.class)

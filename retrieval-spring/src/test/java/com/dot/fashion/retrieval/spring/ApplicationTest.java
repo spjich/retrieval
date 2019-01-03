@@ -12,6 +12,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -21,14 +22,14 @@ import java.util.concurrent.TimeUnit;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ApplicationTest.class)
-@ComponentScan(excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,classes = MainTest.class)})
+@ComponentScan(excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = MainTest.class)})
 @EnableAutoConfiguration
 public class ApplicationTest {
     private Logger logger = LoggerFactory.getLogger(ApplicationTest.class);
     @Autowired
     private TestService testService;
 
-    @Test
+    @Test(expected = UndeclaredThrowableException.class)
     public void test() {
         logger.info("执行结果：" + testService.test(1));
         try {
