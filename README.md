@@ -1,6 +1,11 @@
 # User guide
 
 ## 背景
+
+![img](doc/logo.jpg)
+
+##
+
 项目中有很多需要重试的场景，而每次都得写如下的逻辑
 ```  java
 for (int i=0;i++;i<retry){
