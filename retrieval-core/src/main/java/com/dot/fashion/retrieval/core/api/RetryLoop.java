@@ -37,7 +37,7 @@ public abstract class RetryLoop {
      * @param <T>
      * @return
      */
-    protected <T> T proceed(Retryable<T> retryable) {
+    protected <T> T proceed(Retryable<T> retryable) throws ProceedException {
         return loop(retryable);
     }
 
