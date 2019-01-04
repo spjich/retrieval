@@ -16,7 +16,7 @@ public interface Retryable<T> {
      * @param e     ex
      * @param round 重试次数
      * @param nanos 消耗时间
-     * @return 是否跳出循环
+     * @return 是否跳出循环  true:跳出  false:继续
      */
     default boolean whenError(Throwable e, int round, long nanos) {
         return true;
@@ -36,7 +36,7 @@ public interface Retryable<T> {
      * 循环后置条件
      *
      * @param ret proceed执行结果
-     * @return 是否  结束循环
+     * @return 是否  结束循环  true:结束循环  false:继续循环
      */
     default boolean postCondition(T ret, int round, long nanos) {
         return true;
@@ -47,7 +47,7 @@ public interface Retryable<T> {
      * 循环前置条件
      *
      * @param round 重试次数
-     * @return 是否  继续执行
+     * @return 是否  继续执行 true:继续循环 false:结束循环
      */
     default boolean preCondition(int round, long nanos) {
         return true;
