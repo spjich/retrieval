@@ -19,7 +19,7 @@ public interface Retryable<T> {
      * @return 是否跳出循环  true:跳出  false:继续
      */
     default boolean whenError(Throwable e, int round, long nanos) {
-        return true;
+        return false;
     }
 
     /**
