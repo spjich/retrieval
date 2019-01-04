@@ -94,28 +94,31 @@ public class SyncTest {
         } catch (Exception e) {
             Assert.assertEquals(e.getCause().getCause().getClass(), ArithmeticException.class);
         }
-
-        new RetryBuilder().retry(2).timeout(3000).withCondition().continueOn(new Class[]{ArithmeticException.class}).build().sync(new ConditionRetryable<String>() {
-            @Override
-            public String get() {
-                try {
-                    TimeUnit.SECONDS.sleep(1);
-                } catch (InterruptedException e) {
-                    logger.info("interrupted");
-                    return "break";
+        try {
+            new RetryBuilder().retry(2).timeout(3000).withCondition().continueOn(new Class[]{ArithmeticException.class}).build().sync(new ConditionRetryable<String>() {
+                @Override
+                public String get() {
+                    try {
+                        TimeUnit.SECONDS.sleep(1);
+                    } catch (InterruptedException e) {
+                        logger.info("interrupted");
+                        return "break";
+                    }
+                    System.out.println(1 / 0);
+                    return "success";
                 }
-                System.out.println(1 / 0);
-                return "success";
-            }
 
-            @Override
-            public void whenTimeout() {
-                Assert.assertEquals(invokerId, Thread.currentThread().getId());
-                logger.info("timeout");
-            }
+                @Override
+                public void whenTimeout() {
+                    Assert.assertEquals(invokerId, Thread.currentThread().getId());
+                    logger.info("timeout");
+                }
 
-        });
-        TimeUnit.SECONDS.sleep(1);
+            });
+        } catch (Exception e) {
+            Assert.assertEquals(e.getClass(), TimeoutException.class);
+        }
+
 
         try {
             new RetryBuilder().withCondition().continueOn(new Class[]{ArithmeticException.class}).build().sync(
