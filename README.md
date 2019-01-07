@@ -81,6 +81,7 @@ for (int i=0;i++;i<retry){
                 .proceed(() -> "success");
 ```
 
+> 注意：`new RetryBuilder().build()` 出来的`RetryLoop`非线程安全
 
 ## RetryBuilder 设置参数说明
 
@@ -107,6 +108,9 @@ for (int i=0;i++;i<retry){
 `preCondition` 循环前置条件，每次执行前回调
 
 `whenTimeout` 重试超时时回调，此时不会再回调`whenFinish`
+
+###关于异常
+`whenError`中的异常将被忽略，`postCondition`,`preCondition`,以及`proceed`方法中的异常将被保证成`ProceedException`抛出。`whenFinish`中的异常将直接抛出
 
 > 条件（condition形式下生效）
 

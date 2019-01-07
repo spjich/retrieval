@@ -52,15 +52,20 @@ public final class CallbackRetryLoop extends RetryLoop {
                     break;
                 }
                 t = retryable.proceed(round, diff());
+                if (retryable.postCondition(t, round, diff())) {
+                    break;
+                }
+            } catch (ProceedException pro) {
+                throw pro;
             } catch (InterruptedException in) {
                 throw new ProceedException(in);
             } catch (Exception e) {
-                if (retryable.whenError(e, round, diff())) {
-                    break;
+                try {
+                    if (retryable.whenError(e, round, diff())) {
+                        break;
+                    }
+                } catch (Exception ignored) {
                 }
-            }
-            if (retryable.postCondition(t, round, diff())) {
-                break;
             }
             round++;
             if (retryNum >= 0 && round > retryNum) {
